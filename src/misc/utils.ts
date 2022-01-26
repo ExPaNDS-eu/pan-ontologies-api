@@ -1,15 +1,3 @@
-/**
- * From a single rooted graph it builds an object with the node as a key and the
- *  list relatives (ancestors or descendants) as value
- * @param {string} node Name or id of the node where to start
- * @param {object} relatives Object with key the node and list of nearest
- * relatives (parents or children) as value
- * @param {object} [ids] Object with a map relatives list to ids
- * @param {object} [tree] Object used to store the output
- * @returns {object} Object with the node as a key and the list relatives
- * (ancestors or descendants) as value
- */
-
 export function buildTree(
   node: string|number, 
   relatives: {[key: string|number]: any[]}, 
@@ -29,18 +17,6 @@ export function buildTree(
   return tree;
 };
 
-/**
- * It combines many single rooted graphs togheter to create a composition of
- * graphs
- * @param {string[]} startList List of names of starting nodes of single rooted
- * graphs
- * @param {Array} relatives Object with key the node and list of nearest
- * relatives (parents or children) as value
- * @param {object} [ids] Object with a map relatives list to ids
- * @returns {object} Object with the node as a key and the list relatives
- * (ancestors or descendants) as value
- */
-
 export function buildForest(
   startList: Array<string|number>, 
   relatives: {[key: string|number]: any[]}, 
@@ -54,27 +30,9 @@ export function buildForest(
   )
   };
 
-/**
- * Returns a list of integers included in [start, end]
- * @param {number} start Integer where to start the range from. Its value is
- * included in the returned list
- * @param {number} end Integer where to end the range. Its value is included in
- * the returned list
- * @returns {Array} List of integers
- */
-
 export function range(start: number, end: number): number[] {
   return Array.from({ length: end - start + 1 }, (_, i) => start + i)
 };
-
-/**
- * Unions each array belonging to the same key of each object
- * @param {object} listOfObjects List of objects having a list as value of
- * keyOfObject
- * @param {object} keyOfObject Key to use to get the list from each object
- * @returns {object} Object with key keyOfObject and value of arrays containing
- * the union of the object keyOfObject property
- */
 
 export function unionArraysOfObjects(
   listOfObjects: any[], 
@@ -86,11 +44,5 @@ export function unionArraysOfObjects(
     )]
   }
 };
-
-/**
- * Given a string, it removes the extra spaces
- * @param {string} item A string, potentially with extra spaces
- * @returns {string} The item, without the extra spaces
- */
 
 export function removeExtraSpaces(item: string): string {return item.replace(/\s+/g, " ").trim()};
