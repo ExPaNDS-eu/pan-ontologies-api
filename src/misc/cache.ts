@@ -1,5 +1,5 @@
 import { Entity, Filter } from '@loopback/repository';
-import { cacheInit } from '../config';
+import { cacheConstructor } from '../config';
 
 export class LoopbackCache {
 
@@ -7,14 +7,14 @@ export class LoopbackCache {
   model: any
 
   constructor(
-    config: cacheInit) {
+    config: cacheConstructor) {
     this.sttl = config.sttl;
     this.model = config.model
   }
 
   // eslint-disable-next-line no-unused-vars
   async set(key: string,
-    value: { [key: string]: string } | Iterable<{ [key: string]: string }>,
+    value: { [key: string]: string|number } | Iterable<{ [key: string]: string|number }>,
     ttl: number | null = null): Promise<void> {
     const valueArray = Symbol.iterator in Object(value) ?
       value as Iterable<{ [key: string]: string }> : [value as { [key: string]: string }];

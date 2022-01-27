@@ -82,8 +82,8 @@ export class OntologyTechniquesLoopbackCacheBuilder {
     return synonym.synonym ? synonym : null;
   }
 
-  * prepareForCache(tech: techGetter.techniqueGetterClass, keyMap: {[key: string]: string} = {
-    name: "prefLabel", synonym: "synonyms",
+  * prepareForCache(tech: techGetter.TechniqueOntology, keyMap: {[key: string]: string} = {
+    name: "prefLabel", synonym: "synonym",
     pid: "pid"
   }): Generator<Technique> {
     var index = 0;

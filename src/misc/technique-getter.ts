@@ -1,6 +1,5 @@
 import * as jsdom from "jsdom"
 import * as superagent from "superagent"
-import { XmlObject } from '@loopback/rest';
 import { URL } from 'url';
 
 import * as utils from "./utils";
@@ -33,12 +32,17 @@ interface BioPortalNodes {
   prefLabel: string,
   synonym: string[],
   children: { "@id": string }[]
-  parents: { "@id": string, prefLabel: string }[]
+  parents: { "@id": string, prefLabel: string|null }[]
 }
 
-type techniqueNodes = BioPortalNodes | XmlObject
+type techniqueNodes = BioPortalNodes | NodeList
 
-class OntologyTechnique {
+export type TechniqueOntology = {
+  collection: techniqueCollection[],
+  relatives: { [key: string]: Set<string> }
+}
+
+class OntologyTechnique implements TechniqueOntology {
 
   keys: string[] = ["pid", "parents"];
   collection: baseTechniqueCollection[]
@@ -85,7 +89,7 @@ class OntologyTechnique {
 
   async getCollection(): Promise<any> { }
 
-  pid(item: any, key?: string): string {
+  pid(item: any, key?: string): string|null {
     throw new Error("Method 'pid()' must be implemented.");
   }
 
@@ -122,33 +126,33 @@ export class GitHubOwlTechnique extends OntologyTechnique {
     );
   }
 
-  async getCollection(): Promise<XmlObject> {
+  async getCollection(): Promise<NodeList> {
     const xmlFile = await superagent.get(this.url.toString());
     const xmlParsed = new jsdom.JSDOM(xmlFile.text);
     return xmlParsed.window.document.querySelectorAll(
       "owl\\:Class[rdf\\:about]");
   }
 
-  pid(item: XmlObject, key = "rdf:about"): string {
-    return item.getAttribute(key);
+  pid(item: Element, key = "rdf:about"): string {
+    return item.getAttribute(key) as string;
   }
 
-  prefLabel(item: XmlObject): string {
+  prefLabel(item: Element): string {
     const label = item.getElementsByTagName("rdfs:label")[0];
     return utils.removeExtraSpaces(
-      label ? label.textContent : this.pid(item).split("/").pop()
+      (label ? label.textContent : this.pid(item).split("/").pop()) as string
     );
   }
 
-  synonym(item: XmlObject): string[] {
+  synonym(item: Element): string[] {
     const altLabel = item.getElementsByTagName("skos:altLabel");
     const synonyms = [];
     for (let i = 0; i < altLabel.length; i++)
-      synonyms.push(utils.removeExtraSpaces(altLabel[i].textContent));
+      synonyms.push(utils.removeExtraSpaces(altLabel[i].textContent as string));
     return synonyms;
   }
 
-  parents(item: XmlObject): string[] {
+  parents(item: Element): string[] {
     const subClassOf = item.getElementsByTagName("rdfs:subClassOf");
     const _parents = [];
     for (let i = 0; i < subClassOf.length; i++) {

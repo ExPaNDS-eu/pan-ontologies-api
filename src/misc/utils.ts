@@ -1,10 +1,10 @@
 export function buildTree(
   node: string|number, 
   relatives: {[key: string|number]: any[]}, 
-  ids: {[key: string|number]: string|number} = {}, 
+  ids: {[key: string|number]: string|number|undefined} = {}, 
   tree: {[key: string|number]: Set<any>} = {}
   ): {[key: string|number]: Set<any>} {
-  tree[node] = tree[node] || new Set([ids[node] || node]);
+  tree[node] = tree[node] || new Set([ids[node] || node])
   if (!relatives[node]) return tree;
   relatives[node].map(
     relative => (
