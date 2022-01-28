@@ -1,4 +1,4 @@
-import { JSDOM } from "jsdom"
+import {JSDOM} from 'jsdom';
 
 export const xmlContent = `<?xml version="1.0"?>
 <rdf:RDF xmlns="aXML">
@@ -32,5 +32,5 @@ export const xmlContent = `<?xml version="1.0"?>
 </rdf:RDF>`;
 
 export const querySelectorXml = new JSDOM(
-  xmlContent).window.document.querySelectorAll(
-  "owl\\:Class[rdf\\:about]");
+  xmlContent,
+).window.document.querySelectorAll('owl\\:Class[rdf\\:about]');

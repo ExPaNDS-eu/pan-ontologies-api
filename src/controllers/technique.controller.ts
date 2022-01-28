@@ -4,25 +4,19 @@ import {
   Filter,
   FilterExcludingWhere,
   repository,
-  Where
+  Where,
 } from '@loopback/repository';
-import {
-  param,
-  get,
-  getModelSchemaRef,
-  response  
-} from '@loopback/rest';
+import {param, get, getModelSchemaRef, response} from '@loopback/rest';
 import {Technique} from '../models';
 import {TechniqueRepository} from '../repositories';
 import {intercept} from '@loopback/core';
-import { TechniqueOntologyInterceptor } from '../interceptors';
-
+import {TechniqueOntologyInterceptor} from '../interceptors';
 
 @intercept(TechniqueOntologyInterceptor.BINDING_KEY)
 export class TechniqueController {
   constructor(
     @repository(TechniqueRepository)
-    public techniqueRepository : TechniqueRepository,
+    public techniqueRepository: TechniqueRepository,
   ) {}
 
   @get('/techniques/count')
@@ -35,7 +29,7 @@ export class TechniqueController {
   ): Promise<Count> {
     return this.techniqueRepository.count(where);
   }
-  
+
   @get('/techniques')
   @response(200, {
     description: 'Array of Technique model instances',
@@ -65,7 +59,8 @@ export class TechniqueController {
   })
   async findById(
     @param.path.string('id') id: string,
-    @param.filter(Technique, {exclude: 'where'}) filter?: FilterExcludingWhere<Technique>
+    @param.filter(Technique, {exclude: 'where'})
+    filter?: FilterExcludingWhere<Technique>,
   ): Promise<Technique> {
     return this.techniqueRepository.findById(id, filter);
   }
@@ -87,5 +82,4 @@ export class TechniqueController {
   ): Promise<Technique[]> {
     return this.techniqueRepository.find(filter);
   }
-
 }
