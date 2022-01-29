@@ -34,7 +34,7 @@ interface BioPortalNodes {
   prefLabel: string;
   synonym: string[];
   children: {'@id': string}[];
-  parents: {'@id': string; prefLabel: string | null}[];
+  parents: {'@id': string; prefLabel?: string | null}[];
 }
 
 type TechniqueNodes = BioPortalNodes | Element;
@@ -208,7 +208,8 @@ export class BioPortalTechniques extends OntologyTechnique {
   constructor(config: BioPortalGetter) {
     super();
     config = config || {};
-    this.bioURL = config.url || '';
+    this.bioURL =
+      config.url || 'https://data.bioontology.org/ontologies/PANET/classes';
     this.apiKey = config.apiKey || '';
     this.keys.push(...['prefLabel', 'synonym', 'children']);
   }

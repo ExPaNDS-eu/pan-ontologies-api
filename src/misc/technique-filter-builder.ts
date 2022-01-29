@@ -41,12 +41,6 @@ export class OntologyTechniquesLoopbackCacheBuilder {
     this.cache = new cacheClass[
       (config.cache.class as keyof typeof cacheClass) || 'LoopbackCache'
     ](config.cache);
-    this.negationMap = {
-      neq: 'eq',
-      nin: 'inq',
-      nlike: 'like',
-      nilike: 'ilike',
-    };
   }
 
   async andOr(

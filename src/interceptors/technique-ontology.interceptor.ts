@@ -12,18 +12,13 @@ import {
   FreeFormTechniques,
 } from '../misc';
 import {
-  CacheConfig,
   CacheInit,
   Config as configType,
   GenericGetter,
+  getConfig,
 } from '../config';
 
-let config: configType<CacheConfig, GenericGetter> | {} = {};
-try {
-  config = require('../../config.json');
-} catch (error) {
-  console.log('missing config file, applying defaults');
-}
+const config = getConfig();
 
 /**
  * This class will be bound to the application as an `Interceptor` during
