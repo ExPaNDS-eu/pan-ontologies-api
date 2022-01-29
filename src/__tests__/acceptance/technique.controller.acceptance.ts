@@ -28,25 +28,25 @@ describe(`TechniqueController`, () => {
   });
   const configs = ['BioPortalTechniques', 'GitHubOwlTechnique'];
   configs.forEach(conf => {
-    const cache = {class: 'LoopbackCache', ttl: 0};
-
-    before('select config and response', () => {
-      stubConfig.returns({technique: {class: conf, cache: cache}});
-      if (conf === 'BioPortalTechniques')
-        sandbox
-          .stub(BioPortalTechniques.prototype, 'getCollection')
-          .resolves(bioportalResponse);
-      // eslint-disable-next-line  @typescript-eslint/no-explicit-any
-      else sandbox.stub(superagent, 'get').resolves(githubRespone as any);
-    });
-
-    beforeEach(givenEmptyDatabase);
-
-    after(() => {
-      sandbox.restore();
-    });
-
     describe(`${conf}`, () => {
+      const cache = {class: 'LoopbackCache', ttl: 0};
+
+      before('select config and response', () => {
+        stubConfig.returns({technique: {class: conf, cache: cache}});
+        if (conf === 'BioPortalTechniques')
+          sandbox
+            .stub(BioPortalTechniques.prototype, 'getCollection')
+            .resolves(bioportalResponse);
+        // eslint-disable-next-line  @typescript-eslint/no-explicit-any
+        else sandbox.stub(superagent, 'get').resolves(githubRespone as any);
+      });
+
+      beforeEach(givenEmptyDatabase);
+
+      after(() => {
+        sandbox.restore();
+      });
+
       it('invokes GET /techniques', async () => {
         const res = await client.get('/techniques').expect(200);
         res.body.forEach((technique: Technique) => {
