@@ -10,6 +10,7 @@ import superagent = require('superagent');
 import {BioPortalTechniques} from '../../misc/technique-getter';
 import {bioportalResponse} from '../fixtures/responses/biobortal.response';
 import {githubRespone} from '../fixtures/responses/github.response';
+import {Condition} from '@loopback/repository';
 
 describe(`TechniqueController`, () => {
   let app: PanOntologiesApplication;
@@ -58,18 +59,54 @@ describe(`TechniqueController`, () => {
         });
       });
 
+      it('invokes GET /techniques/{id}', async () => {
+        const pid = 'http://purl.org/pan-science/PaNET/PaNET01200';
+        const pidEncoded = encodeURIComponent(pid);
+        const res = await client.get(`/techniques/${pidEncoded}`).expect(200);
+        expect(res.body.pid).to.be.eql(pid);
+        expect(res.body.name).to.be.eql('x-ray emission spectroscopy');
+        expect(res.body.synonym).to.be.eql(['XES']);
+        expect(res.body.relatives).to.be.eql([pid]);
+      });
+
       it('invokes GET /techniques/count', async () => {
         const res = await client.get('/techniques/count').expect(200);
+        console.log(res.body);
         expect(res.body).to.have.property('count');
         expect(res.body.count).to.be.eql(377);
       });
 
       panFilters.forEach((testCase, i) => {
         it(`invokes GET /pan-technique ${i}`, async () => {
-          const whereFilter = JSON.stringify({where: testCase});
+          const whereFilter = JSON.stringify({
+            where: testCase,
+          });
           const res = await client
             .get('/techniques/pan-ontology?filter=' + whereFilter)
             .expect(200);
+
+          const check = (
+            left: Condition<Technique>,
+            right: Condition<Technique>,
+          ) => {
+            expect(Object.keys(left.pid)).to.eql(Object.keys(right.pid));
+            expect(Object.keys(left.pid).length).to.eql(1);
+            const condition = Object.keys(right.pid)[0];
+            expect(left.pid[condition].sort()).to.eql(
+              right.pid[condition].sort(),
+            );
+          };
+
+          const expected: Condition<Technique> = expectedPanEspanded[i];
+          if ('and' in expected || 'or' in expected) {
+            expect(Object.keys(res.body).length).to.eql(1);
+            expect(Object.keys(res.body)).to.eql(Object.keys(expected));
+            const k = Object.keys(expected)[0];
+            res.body[k].map((element: Condition<Technique>[], j: number) => {
+              const expectedElement = expected[k][j];
+              check(element, expectedElement);
+            });
+          } else check(res.body, expected);
           expect(res.body).to.eql(expectedPanEspanded[i]);
         });
       });

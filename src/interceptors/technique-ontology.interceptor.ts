@@ -18,8 +18,6 @@ import {
   getConfig,
 } from '../config';
 
-const config = getConfig();
-
 /**
  * This class will be bound to the application as an `Interceptor` during
  * `boot`
@@ -47,6 +45,7 @@ export class TechniqueOntologyInterceptor implements Provider<Interceptor> {
     invocationCtx: InvocationContext,
     next: () => ValueOrPromise<InvocationResult>,
   ) {
+    const config = getConfig();
     let technique: FreeFormTechniques | OntologyTechniquesLoopbackCacheBuilder;
     if ('technique' in config) {
       // eslint-disable-next-line  @typescript-eslint/no-explicit-any
@@ -58,11 +57,8 @@ export class TechniqueOntologyInterceptor implements Provider<Interceptor> {
     } else technique = new FreeFormTechniques();
     await technique.buildTechniques();
     const result = await next();
-    if (
-      invocationCtx.methodName === 'findPanOntology' &&
-      'where' in invocationCtx.args[0]
-    )
-      return technique.buildFilter(invocationCtx.args[0].where);
+    if (invocationCtx.methodName === 'findPanOntology')
+      return technique.buildFilter(invocationCtx.args[0].where ?? {});
     else return result;
   }
 }
