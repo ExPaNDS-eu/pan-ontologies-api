@@ -1,7 +1,11 @@
 import {Client, expect} from '@loopback/testlab';
 import {PanOntologiesApplication} from '../..';
 import {setupApplication} from './test-helper';
-import {expectedPanEspanded, panFilters} from '../fixtures/technique.testcases';
+import {
+  expectedPanEspanded,
+  panFilters,
+  elementsNumber,
+} from '../fixtures/technique.testcases';
 import {Technique} from '../../models';
 import {givenEmptyDatabase} from '../helpers/database.helpers';
 import * as config from '../../config';
@@ -71,9 +75,10 @@ describe(`TechniqueController`, () => {
 
       it('invokes GET /techniques/count', async () => {
         const res = await client.get('/techniques/count').expect(200);
-        console.log(res.body);
         expect(res.body).to.have.property('count');
-        expect(res.body.count).to.be.eql(377);
+        expect(res.body.count).to.be.eql(
+          elementsNumber[conf as keyof typeof elementsNumber],
+        );
       });
 
       panFilters.forEach((testCase, i) => {

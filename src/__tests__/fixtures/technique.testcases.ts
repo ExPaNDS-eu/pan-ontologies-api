@@ -680,3 +680,8 @@ export const expectedPanEspanded = [
   {pid: {inq: ['http://purl.org/pan-science/PaNET/PaNET01200']}},
   {pid: {inq: ['http://purl.org/pan-science/PaNET/PaNET01200']}},
 ];
+
+export const elementsNumber = {
+  BioPortalTechniques: 378,
+  GitHubOwlTechnique: 377,
+};
