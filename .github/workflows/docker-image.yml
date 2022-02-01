@@ -3,10 +3,6 @@ name: Docker Image CI
 on:  
   push:
     branches: [ main ]
-  workflow_run:
-    workflows: ["Node.js CI"]
-    types: 
-      - completed
 
 env:
   REGISTRY: ghcr.io
@@ -37,11 +33,7 @@ jobs:
         images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
         tags: |
           type=sha
-        flavor: |
-          latest=auto
-          prefix=
-          suffix=
-
+          type=raw,value=latest
     
     - name: Build and push Docker image
       id: build-and-push
