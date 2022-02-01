@@ -1,3 +1,5 @@
+[![Coverage Status](https://coveralls.io/repos/github/ExPaNDS-eu/pan-ontologies-api/badge.svg?branch=main)](https://coveralls.io/github/ExPaNDS-eu/pan-ontologies-api?branch=main)
+
 # pan-ontologies
 
 This application is generated using [LoopBack 4 CLI](https://loopback.io/doc/en/lb4/Command-line-interface.html) with the
