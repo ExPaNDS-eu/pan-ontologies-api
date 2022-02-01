@@ -26,7 +26,7 @@
     "coverage": "open coverage/index.html",
     "coverage:ci": "lb-nyc report --reporter=text-lcov | coveralls",
     "mocha": "lb-mocha --allow-console-logs \"dist/__tests__\"",
-    "test": "lb-nyc npm run mocha",
+    "test": "lb-nyc --reporter=lcov npm run mocha",
     "test:ci": "lb-nyc npm run mocha",
     "posttest": "npm run lint",
     "test:dev": "lb-mocha --allow-console-logs dist/__tests__/**/*.js && npm run posttest",
