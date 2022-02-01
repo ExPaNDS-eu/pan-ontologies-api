@@ -4,6 +4,10 @@ on:
   pull_request:
     branches: [ main ]
 
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
 jobs:
 
   build:
@@ -11,11 +15,34 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
-      with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
-    - name: Build the Docker image
-      run: docker build . --file Dockerfile -t "ghcr.io/${GITHUB_REPOSITORY,,}:${GITHUB_SHA::7}" -t "ghcr.io/${GITHUB_REPOSITORY,,}:latest"
-    - name: Push the Docker image
-      run: docker push -a "ghcr.io/${GITHUB_REPOSITORY,,}"
+    - name: Checkout repository
+      uses: actions/checkout@v2
 
+    - name: Log in to the Container registry
+      uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
+      with:
+        registry: ${{ env.REGISTRY }}
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+
+    - name: Extract metadata (tags, labels) for Docker
+      id: meta
+      uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
+      with:
+        images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+        tags: |
+          # minimal (short sha)
+          type=sha
+          # full length sha
+          type=sha,format=long
+
+    
+    - name: Build and push Docker image
+      id: build-and-push
+      uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
+      with:
+        context: .
+        # push: ${{ github.event_name != 'pull_request' }}
+        tags: ${{ steps.meta.outputs.tags }
+        labels: ${{ steps.meta.outputs.labels }}
