@@ -29,8 +29,8 @@ jobs:
     - run: npm test
 
     - name: Generate coverage report
-      run: npm run coverage:ci --ignore-scripts
-      run: ls
+    - run: npm run coverage:ci --ignore-scripts
+    - run: ls
 
     - name: Coveralls
       uses: coverallsapp/github-action@master
