@@ -32,10 +32,7 @@ jobs:
       with:
         images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
         tags: |
-          # minimal (short sha)
           type=sha
-          # full length sha
-          type=sha,format=long
 
     
     - name: Build and push Docker image
