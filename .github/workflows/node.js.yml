@@ -30,6 +30,7 @@ jobs:
 
     - name: Generate coverage report
       run: npm run coverage:ci --ignore-scripts
+      run: ls
 
     - name: Coveralls
       uses: coverallsapp/github-action@master
