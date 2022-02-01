@@ -5,6 +5,7 @@ import {Technique} from '../models';
 import * as techGetter from './technique-getter';
 import * as utils from './utils';
 import {CacheInit, Config as configType, GenericGetter} from '../config';
+import {ApplicationConfig} from '..';
 
 export type WherePids<T extends object = AnyObject> = Where<{
   pid: {
@@ -155,4 +156,20 @@ export class OntologyTechniquesLoopbackCacheBuilder {
       await this.cache.set('pid', items);
     }
   }
+}
+
+export async function selectTechniqueBuilder(
+  config: ApplicationConfig,
+  dataModel: Promise<AnyObject>,
+): Promise<OntologyTechniquesLoopbackCacheBuilder | FreeFormTechniques> {
+  let techniqueBuilder:
+    | OntologyTechniquesLoopbackCacheBuilder
+    | FreeFormTechniques;
+  if ('technique' in config) {
+    config.technique.cache.model = await dataModel;
+    techniqueBuilder = new OntologyTechniquesLoopbackCacheBuilder(
+      config.technique,
+    );
+  } else techniqueBuilder = new FreeFormTechniques();
+  return techniqueBuilder;
 }

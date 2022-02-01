@@ -57,6 +57,21 @@ describe('LoopbackCache', () => {
         });
       });
     });
+
+    it('test already existing', async () => {
+      const args = {input: {name: 'a', pid: 1}, ttl: 100};
+      const expected = {name: 'a', pid: 1, ttl: 100};
+      const mock = sandbox.createStubInstance(TechniqueRepository);
+      const existsStub = mock.exists as sinon.SinonStub;
+      existsStub.resolves(true);
+      const replaceStub = mock.replaceById as sinon.SinonStub;
+      const cache = new LoopbackCache(
+        // eslint-disable-next-line  @typescript-eslint/no-explicit-any
+        {sttl: 10, model: mock as any},
+      );
+      await cache.set('pid', args.input, args.ttl);
+      expect(replaceStub.calledWith(args.input.pid, expected)).to.be.true;
+    });
   });
 
   describe('get', () => {

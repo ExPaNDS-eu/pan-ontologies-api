@@ -3,8 +3,13 @@ import {expect} from 'chai';
 import {createSandbox} from 'sinon';
 const sandbox = createSandbox();
 
-import {OntologyTechniquesLoopbackCacheBuilder} from '../../misc/technique-filter-builder';
+import {
+  OntologyTechniquesLoopbackCacheBuilder,
+  selectTechniqueBuilder,
+  FreeFormTechniques,
+} from '../../misc/technique-filter-builder';
 import {Technique} from '../../models';
+import {TechniqueRepository} from '../../repositories';
 
 afterEach(done => {
   sandbox.restore();
@@ -346,6 +351,29 @@ describe('OntologyTechniquesLoopbackCacheBuilder', () => {
           })
           .catch(done);
       });
+    });
+  });
+});
+
+describe('selectTechniqueBuilder', () => {
+  const tests = [
+    {
+      args: {technique: {cache: {}}},
+      expected: OntologyTechniquesLoopbackCacheBuilder,
+      message: 'simple filter',
+    },
+    {
+      args: {},
+      expected: FreeFormTechniques,
+      message: 'one level filter unchanged',
+    },
+  ];
+  tests.forEach(({args, expected, message}) => {
+    it(`${message}`, async () => {
+      const mock = sandbox.createStubInstance(TechniqueRepository);
+      const dm = Promise.resolve(mock);
+      const tech = await selectTechniqueBuilder(args, dm);
+      expect(tech).to.be.instanceOf(expected);
     });
   });
 });

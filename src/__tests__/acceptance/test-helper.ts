@@ -23,8 +23,8 @@ export async function setupApplication(
     ...config,
   });
 
-  await app.boot();
   app.dataSource(testdb);
+  await app.boot();
   await app.start();
 
   const client = createRestAppClient(app);
