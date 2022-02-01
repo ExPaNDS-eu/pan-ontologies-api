@@ -5,8 +5,11 @@ import {
   Client,
 } from '@loopback/testlab';
 import {testdb} from '../fixtures/datasources/testdb.datasource';
+import {CacheConfig, Config, GenericGetter} from '../../config';
 
-export async function setupApplication(): Promise<AppWithClient> {
+export async function setupApplication(
+  config?: Config<CacheConfig, GenericGetter>,
+): Promise<AppWithClient> {
   const restConfig = givenHttpServerConfig({
     // Customize the server configuration here.
     // Empty values (undefined, '') will be ignored by the helper.
@@ -17,6 +20,7 @@ export async function setupApplication(): Promise<AppWithClient> {
 
   const app = new PanOntologiesApplication({
     rest: restConfig,
+    ...config,
   });
 
   await app.boot();

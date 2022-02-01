@@ -6,7 +6,7 @@ import * as techGetter from './technique-getter';
 import * as utils from './utils';
 import {CacheInit, Config as configType, GenericGetter} from '../config';
 
-type WherePids<T extends object = AnyObject> = Where<{
+export type WherePids<T extends object = AnyObject> = Where<{
   pid: {
     [key: string]: T[];
   };
@@ -17,7 +17,7 @@ export class FreeFormTechniques {
 
   async buildTechniques(): Promise<void> {}
 
-  buildFilter(filter: Where<Technique>): Where<Technique> {
+  buildFilter(filter: Where<Technique> = {}): Where<Technique> {
     return filter;
   }
 }
@@ -133,7 +133,9 @@ export class OntologyTechniquesLoopbackCacheBuilder {
     }
   }
 
-  async buildFilter(filter: Where<Technique>): Promise<WherePids<Technique>> {
+  async buildFilter(
+    filter: Where<Technique> = {},
+  ): Promise<WherePids<Technique>> {
     let outFilter;
     if ('and' in filter) {
       outFilter = await this.andOr(filter.and, 'and');

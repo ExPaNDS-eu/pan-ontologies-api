@@ -9,6 +9,11 @@ import {RestApplication} from '@loopback/rest';
 import {ServiceMixin} from '@loopback/service-proxy';
 import path from 'path';
 import {MySequence} from './sequence';
+import {TechniqueRepository} from './repositories';
+import {
+  OntologyTechniquesLoopbackCacheBuilder,
+  FreeFormTechniques,
+} from './misc';
 
 export {ApplicationConfig};
 
@@ -40,5 +45,18 @@ export class PanOntologiesApplication extends BootMixin(
         nested: true,
       },
     };
+  }
+  async boot(): Promise<void> {
+    await super.boot();
+    let technique: OntologyTechniquesLoopbackCacheBuilder | FreeFormTechniques;
+    if ('technique' in this.options) {
+      this.options.technique.cache.model = await this.get<TechniqueRepository>(
+        'repositories.TechniqueRepository',
+      );
+      technique = new OntologyTechniquesLoopbackCacheBuilder(
+        this.options.technique,
+      );
+    } else technique = new FreeFormTechniques();
+    this.bind('technique').to(technique);
   }
 }

@@ -9,15 +9,26 @@ import {
 import {param, get, getModelSchemaRef, response} from '@loopback/rest';
 import {Technique} from '../models';
 import {TechniqueRepository} from '../repositories';
-import {intercept} from '@loopback/core';
+import {intercept, inject} from '@loopback/core';
 import {TechniqueOntologyInterceptor} from '../interceptors';
+import {
+  FreeFormTechniques,
+  OntologyTechniquesLoopbackCacheBuilder,
+  WherePids,
+} from '../misc';
 
 @intercept(TechniqueOntologyInterceptor.BINDING_KEY)
 export class TechniqueController {
   constructor(
+    @inject('technique')
+    private technique:
+      | OntologyTechniquesLoopbackCacheBuilder
+      | FreeFormTechniques,
     @repository(TechniqueRepository)
     public techniqueRepository: TechniqueRepository,
-  ) {}
+  ) {
+    this.technique = technique;
+  }
 
   @get('/techniques/count')
   @response(200, {
@@ -78,8 +89,8 @@ export class TechniqueController {
     },
   })
   async findPanOntology(
-    @param.filter(Technique) filter?: Filter<Technique>,
-  ): Promise<Technique[]> {
-    return this.techniqueRepository.find(filter);
+    @param.where(Technique) where?: Where<Technique>,
+  ): Promise<WherePids<Technique>> {
+    return this.technique.buildFilter(where);
   }
 }

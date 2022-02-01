@@ -31,6 +31,7 @@ if (require.main === module) {
         setServersFromRequest: true,
       },
     },
+    ...(require('../config.json') ?? {}),
   };
   main(config).catch(err => {
     console.error('Cannot start the application.', err);

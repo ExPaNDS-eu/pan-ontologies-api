@@ -32,14 +32,3 @@ export type CacheConstructor = {
 export type CacheInit = CacheConfig & {
   model: Entity;
 };
-
-let config: Config<CacheConfig, GenericGetter> | {} = {};
-try {
-  config = require('../config.json');
-} catch (error) {
-  console.log('missing config file, applying defaults');
-}
-
-export function getConfig() {
-  return config;
-}
