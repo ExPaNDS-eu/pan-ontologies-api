@@ -36,9 +36,7 @@ export class TechniqueOntologyInterceptor implements Provider<Interceptor> {
     private technique:
       | OntologyTechniquesLoopbackCacheBuilder
       | FreeFormTechniques,
-  ) {
-    this.technique = technique;
-  }
+  ) {}
 
   /**
    * The logic to intercept an invocation

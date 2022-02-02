@@ -26,9 +26,7 @@ export class TechniqueController {
       | FreeFormTechniques,
     @repository(TechniqueRepository)
     public techniqueRepository: TechniqueRepository,
-  ) {
-    this.technique = technique;
-  }
+  ) {}
 
   @get('/techniques/count')
   @response(200, {
