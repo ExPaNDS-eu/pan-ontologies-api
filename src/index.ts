@@ -1,4 +1,5 @@
 import {ApplicationConfig, PanOntologiesApplication} from './application';
+import {CacheConfig, Config, GenericGetter} from './config';
 
 export * from './application';
 
@@ -16,6 +17,12 @@ export async function main(options: ApplicationConfig = {}) {
 
 if (require.main === module) {
   // Run the application
+  let conf: Config<GenericGetter, CacheConfig> | {} = {};
+  try {
+    conf = require('../config.json');
+  } catch {
+    console.log('missing config file, applying defaults');
+  }
   const config = {
     rest: {
       port: +(process.env.PORT ?? 3000),
@@ -31,7 +38,7 @@ if (require.main === module) {
         setServersFromRequest: true,
       },
     },
-    ...(require('../config.json') ?? {}),
+    ...conf,
   };
   main(config).catch(err => {
     console.error('Cannot start the application.', err);

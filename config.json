@@ -1,0 +1,9 @@
+{
+    "technique": {
+        "class": "GitHubOwlTechnique",
+        "cache": {
+            "class": "LoopbackCache",
+            "sttl": 604800
+        }
+    }
+}
