@@ -120,7 +120,7 @@ export class GitHubOwlTechnique extends OntologyTechnique {
   constructor(config: GitHubGetter) {
     super();
     config = config ?? {};
-    this.url =
+    this.repoURL =
       config.url ??
       'https://raw.githubusercontent.com/ExPaNDS-eu/ExPaNDS-experimental-techniques-ontology';
     this.commit = config.commit ?? 'master';
@@ -132,7 +132,7 @@ export class GitHubOwlTechnique extends OntologyTechnique {
   composeURL() {
     this.url = new URL(
       `${this.commit}/${this.file}`,
-      this.url.endsWith('/') ? this.url : `${this.url}/`,
+      this.repoURL.endsWith('/') ? this.repoURL : `${this.repoURL}/`,
     ).toString();
   }
 
@@ -200,7 +200,7 @@ export class GitHubOwlTechnique extends OntologyTechnique {
 export class BioPortalTechniques extends OntologyTechnique {
   collection: BioPortalTechniqueCollection[];
   bioURL: string;
-  url: URL;
+  url: string;
   apiKey: string;
   headers: {};
   queryParams: {};
@@ -209,7 +209,7 @@ export class BioPortalTechniques extends OntologyTechnique {
     super();
     config = config || {};
     this.bioURL =
-      config.url || 'https://data.bioontology.org/ontologies/PANET/classes';
+      config.url ?? 'https://data.bioontology.org/ontologies/PANET/classes';
     this.apiKey = config.apiKey || '';
     this.keys.push(...['prefLabel', 'synonym', 'children']);
   }
@@ -221,12 +221,12 @@ export class BioPortalTechniques extends OntologyTechnique {
       Authorization: `apikey token=${this.apiKey}`,
     };
     this.queryParams = {include: 'children,prefLabel,synonym,parents'};
-    this.url = new URL(this.bioURL);
+    this.url = new URL(this.bioURL).toString();
   }
 
   async getCollection(): Promise<BioPortalNodes[]> {
     const [url, headers, queryParams] = [
-      this.url.toString(),
+      this.url,
       this.headers,
       this.queryParams,
     ];
