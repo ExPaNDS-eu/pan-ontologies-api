@@ -1,4 +1,9 @@
+[![Test Status](https://github.com/ExPaNDS-eu/pan-ontologies-api/actions/workflows/node.js.yml/badge.svg?branch=main)](https://github.com/ExPaNDS-eu/pan-ontologies-api/actions)
+[![Known Vulnerabilities](https://snyk.io/test/github/ExPaNDS-eu/pan-ontologies-api/badge.svg)](https://snyk.io/test/github/ExPaNDS-eu/pan-ontologies-api)
+[![Docker build Status](https://github.com/ExPaNDS-eu/pan-ontologies-api/actions/workflows/docker-image.yml/badge.svg?branch=main)](https://github.com/ExPaNDS-eu/pan-ontologies-api/actions)
 [![Coverage Status](https://coveralls.io/repos/github/ExPaNDS-eu/pan-ontologies-api/badge.svg?branch=main)](https://coveralls.io/github/ExPaNDS-eu/pan-ontologies-api?branch=main)
+[![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
+[![DeepScan grade](https://deepscan.io/api/teams/16757/projects/20076/branches/534946/badge/grade.svg)](https://deepscan.io/dashboard#view=project&tid=16757&pid=20076&bid=534946)
 
 # pan-ontologies
 
