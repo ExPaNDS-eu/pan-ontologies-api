@@ -7,7 +7,7 @@ export type Config<T, C> = C extends BioPortalGetter
   : {technique: GitHubGetter & {cache: T} & {class: string}};
 
 export type BioPortalGetter = {
-  url: string;
+  url?: string;
   apiKey: string;
 };
 

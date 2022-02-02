@@ -21,7 +21,7 @@ describe('BioPortalTechniques', () => {
       it('Sets the url, the queryParams and the headers to use', done => {
         BioPortalTechniques.composeURL();
         /* eslint-disable no-unused-expressions */
-        expect(BioPortalTechniques.url instanceof URL).to.true;
+        expect(typeof BioPortalTechniques.url === 'string').to.true;
         /* eslint-disable no-unused-expressions */
         expect(BioPortalTechniques.headers).to.not.be.null;
         /* eslint-disable no-unused-expressions */
