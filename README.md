@@ -4,6 +4,7 @@
 [![Coverage Status](https://coveralls.io/repos/github/ExPaNDS-eu/pan-ontologies-api/badge.svg?branch=main)](https://coveralls.io/github/ExPaNDS-eu/pan-ontologies-api?branch=main)
 [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
 [![DeepScan grade](https://deepscan.io/api/teams/16757/projects/20076/branches/534946/badge/grade.svg)](https://deepscan.io/dashboard#view=project&tid=16757&pid=20076&bid=534946)
+[![License](https://img.shields.io/badge/License-BSD_2--Clause-orange.svg)](https://opensource.org/licenses/BSD-2-Clause)
 
 # pan-ontologies
 
