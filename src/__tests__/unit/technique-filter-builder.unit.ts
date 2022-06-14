@@ -36,6 +36,7 @@ describe('OntologyTechniquesLoopbackCacheBuilder', () => {
               {pid: '1', prefLabel: 'a', synonym: ['A'], parents: ['A']},
               {pid: '2', prefLabel: 'b', synonym: ['B'], parents: ['A']},
             ],
+            firstDescendants: {'1': ['2', '3'], '2': ['3']},
           };
           const expected = [
             {
@@ -44,6 +45,7 @@ describe('OntologyTechniquesLoopbackCacheBuilder', () => {
               synonym: ['A'],
               relatives: ['2', '3'],
               createdAt: 1,
+              children: ['2', '3'],
             },
             {
               pid: '2',
@@ -51,6 +53,7 @@ describe('OntologyTechniquesLoopbackCacheBuilder', () => {
               synonym: ['B'],
               relatives: ['3', '4'],
               createdAt: 1,
+              children: ['3'],
             },
           ];
 
@@ -331,12 +334,14 @@ describe('OntologyTechniquesLoopbackCacheBuilder', () => {
             parents: ['b'],
           },
         ];
+        techniqueCache.techniqueGetter.firstDescendants = {'1': ['2']};
         const expected = {
           pid: '1',
           name: 'a',
           synonym: ['A'],
           relatives: ['1', '2'],
           createdAt: 10,
+          children: ['2'],
         };
         sandbox.stub(Date, 'now').returns(10);
         sandbox.stub(techniqueCache.cache, 'get').resolves([]);

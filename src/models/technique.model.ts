@@ -30,6 +30,13 @@ export class Technique extends Entity {
   })
   relatives: string[];
 
+  @property({
+    type: 'array',
+    itemType: 'string',
+    default: [],
+  })
+  children?: string[];
+
   // Define well-known properties here
 
   // Indexer property to allow additional data
