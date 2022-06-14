@@ -1,7 +1,6 @@
 import {expect} from 'chai';
 import {createSandbox} from 'sinon';
 import superagent = require('superagent');
-// import * as superagent from 'superagent';
 import * as techniqueGetter from '../../misc/technique-getter';
 import {xmlContent, querySelectorXml} from '../fixtures/MockStubs';
 const sandbox = createSandbox();
@@ -130,6 +129,7 @@ describe('BioPortalTechniques', () => {
           const expected = {
             parents: {'1': ['3', '4'], '2': []},
             leaves: ['1'],
+            children: {'2': ['1', '2'], '1': []},
           };
           function* f(arr: techniqueGetter.TechniqueCollection[]) {
             for (const a of arr) {
@@ -197,6 +197,7 @@ describe('BioPortalTechniques', () => {
           ];
           const expected = {
             relatives: {'1': new Set(['1', '2']), '2': new Set(['2'])},
+            firstDescendants: {'1': ['2'], '2': []},
             collection: [
               {
                 prefLabel: 'a',
@@ -225,6 +226,25 @@ describe('BioPortalTechniques', () => {
         });
       },
     );
+  });
+
+  describe('leavesNode', () => {
+    context('Store leaves and children', () => {
+      it('Store leaves and children', done => {
+        const node = {
+          pid: '1',
+          prefLabel: 'a',
+          synonym: ['A'],
+          children: ['2'],
+          parents: [],
+        };
+        const o = {leaves: [], parents: {}, children: {}};
+        const expected = {children: {'1': ['2']}, leaves: [], parents: {}};
+        BioPortalTechniques.leavesNode(node, o);
+        expect(o).to.be.eql(expected);
+        done();
+      });
+    });
   });
 });
 
@@ -373,6 +393,10 @@ describe('GitHubOwlTechnique', () => {
           'http://class2/label2': new Set(['http://class2/label2', 'class3']),
           class3: new Set(['class3']),
         },
+        firstDescendants: {
+          class1: ['http://class2/label2', 'class3'],
+          'http://class2/label2': ['class3'],
+        },
       };
       sandbox
         .stub(GitHubOwlTechnique, 'getCollection')
@@ -384,6 +408,24 @@ describe('GitHubOwlTechnique', () => {
           done();
         })
         .catch(done);
+    });
+  });
+
+  describe('leavesNode', () => {
+    context('Store leaves and children', () => {
+      it('Store leaves and children', done => {
+        const node = {
+          pid: '3',
+          prefLabel: 'a',
+          synonym: ['A'],
+          parents: ['1'],
+        };
+        const o = {leaves: [], parents: {}, children: {'1': ['2']}};
+        const expected = {children: {'1': ['2', '3']}, leaves: [], parents: {}};
+        GitHubOwlTechnique.leavesNode(node, o);
+        expect(o).to.be.eql(expected);
+        done();
+      });
     });
   });
 });

@@ -27,6 +27,7 @@ export type TechniqueCollection =
 interface BaseTechniqueNodes {
   leaves: string[];
   parents: {[key: string]: string[]};
+  children: {[key: string]: string[]};
 }
 
 interface BioPortalNodes {
@@ -42,12 +43,14 @@ type TechniqueNodes = BioPortalNodes | Element;
 export type TechniqueOntology = {
   collection: TechniqueCollection[];
   relatives: {[key: string]: Set<string>};
+  firstDescendants: {[key: string]: string[]};
 };
 
 class OntologyTechnique implements TechniqueOntology {
   keys: string[] = ['pid', 'parents'];
   collection: BaseTechniqueCollection[];
   relatives: {[key: string]: Set<string>};
+  firstDescendants: {[key: string]: string[]};
 
   *processCollection(
     collection: TechniqueNodes[] | NodeList,
@@ -74,7 +77,7 @@ class OntologyTechnique implements TechniqueOntology {
   }
 
   buildNodes(collection: Generator<TechniqueCollection>): BaseTechniqueNodes {
-    const o: BaseTechniqueNodes = {leaves: [], parents: {}};
+    const o: BaseTechniqueNodes = {leaves: [], parents: {}, children: {}};
     for (const node of collection) {
       const pid = node['pid'];
       this.leavesNode(node, o);
@@ -90,6 +93,7 @@ class OntologyTechnique implements TechniqueOntology {
     const collection = this.processCollection(await this.getCollection());
     const nodes = this.buildNodes(collection);
     const relatives = utils.buildForest(nodes.leaves, nodes.parents);
+    this.firstDescendants = nodes.children;
     this.relatives = relatives;
     return this;
   }
@@ -187,6 +191,11 @@ export class GitHubOwlTechnique extends OntologyTechnique {
     return o;
   }
 
+  leavesNode(node: GitHubOwlTechniqueCollection, o: BaseTechniqueNodes) {
+    for (const parent of node.parents)
+      o['children'][parent] = (o['children'][parent] || []).concat(node.pid);
+  }
+
   filterLeaves(): string[] {
     return this.collection.reduce(
       (out: string[], e) => (
@@ -273,6 +282,7 @@ export class BioPortalTechniques extends OntologyTechnique {
 
   leavesNode(node: BioPortalTechniqueCollection, o: BaseTechniqueNodes) {
     if (node['children'].length === 0) o['leaves'].push(node.pid);
+    o['children'][node.pid] = node.children;
   }
 }
 
