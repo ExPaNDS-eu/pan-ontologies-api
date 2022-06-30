@@ -10,19 +10,15 @@ type BaseTechniqueCollection = {
   parents: string[];
 };
 
-type GitHubOwlTechniqueCollection = BaseTechniqueCollection & {
+type OwlTechniqueCollection = BaseTechniqueCollection & {
   prefLabel: string;
   synonym: string[];
-};
-
-type BioPortalTechniqueCollection = GitHubOwlTechniqueCollection & {
   children: string[];
 };
 
 export type TechniqueCollection =
   | BaseTechniqueCollection
-  | GitHubOwlTechniqueCollection
-  | BioPortalTechniqueCollection;
+  | OwlTechniqueCollection;
 
 interface BaseTechniqueNodes {
   leaves: string[];
@@ -43,14 +39,12 @@ type TechniqueNodes = BioPortalNodes | Element;
 export type TechniqueOntology = {
   collection: TechniqueCollection[];
   relatives: {[key: string]: Set<string>};
-  firstDescendants: {[key: string]: string[]};
 };
 
 class OntologyTechnique implements TechniqueOntology {
   keys: string[] = ['pid', 'parents'];
   collection: BaseTechniqueCollection[];
   relatives: {[key: string]: Set<string>};
-  firstDescendants: {[key: string]: string[]};
 
   *processCollection(
     collection: TechniqueNodes[] | NodeList,
@@ -93,7 +87,6 @@ class OntologyTechnique implements TechniqueOntology {
     const collection = this.processCollection(await this.getCollection());
     const nodes = this.buildNodes(collection);
     const relatives = utils.buildForest(nodes.leaves, nodes.parents);
-    this.firstDescendants = nodes.children;
     this.relatives = relatives;
     return this;
   }
@@ -119,7 +112,7 @@ export class GitHubOwlTechnique extends OntologyTechnique {
   file: string;
   parentsSet: Set<string>;
   url: string;
-  collection: GitHubOwlTechniqueCollection[];
+  collection: OwlTechniqueCollection[];
 
   constructor(config: GitHubGetter) {
     super();
@@ -184,22 +177,24 @@ export class GitHubOwlTechnique extends OntologyTechnique {
   }
 
   buildNodes(
-    collection: Generator<GitHubOwlTechniqueCollection>,
+    collection: Generator<OwlTechniqueCollection>,
   ): BaseTechniqueNodes {
     const o = super.buildNodes(collection);
-    o['leaves'] = this.filterLeaves();
+    o['leaves'] = this.filterLeaves(o);
     return o;
   }
 
-  leavesNode(node: GitHubOwlTechniqueCollection, o: BaseTechniqueNodes) {
+  leavesNode(node: OwlTechniqueCollection, o: BaseTechniqueNodes) {
     for (const parent of node.parents)
       o['children'][parent] = (o['children'][parent] || []).concat(node.pid);
   }
 
-  filterLeaves(): string[] {
+  filterLeaves(o: BaseTechniqueNodes): string[] {
     return this.collection.reduce(
       (out: string[], e) => (
-        !this.parentsSet.has(e.pid) ? out.push(e.pid) : null, out
+        (e['children'] = o['children'][e.pid] || []),
+        !this.parentsSet.has(e.pid) ? out.push(e.pid) : null,
+        out
       ),
       [],
     );
@@ -207,7 +202,7 @@ export class GitHubOwlTechnique extends OntologyTechnique {
 }
 
 export class BioPortalTechniques extends OntologyTechnique {
-  collection: BioPortalTechniqueCollection[];
+  collection: OwlTechniqueCollection[];
   bioURL: string;
   url: string;
   apiKey: string;
@@ -280,7 +275,7 @@ export class BioPortalTechniques extends OntologyTechnique {
     }
   }
 
-  leavesNode(node: BioPortalTechniqueCollection, o: BaseTechniqueNodes) {
+  leavesNode(node: OwlTechniqueCollection, o: BaseTechniqueNodes) {
     if (node['children'].length === 0) o['leaves'].push(node.pid);
     o['children'][node.pid] = node.children;
   }

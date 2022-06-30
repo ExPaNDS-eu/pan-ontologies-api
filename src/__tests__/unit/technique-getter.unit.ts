@@ -355,12 +355,19 @@ describe('GitHubOwlTechnique', () => {
   describe('filterLeaves', () => {
     it('Returns the pids of the leaves and appends to an array', done => {
       GitHubOwlTechnique.collection = [
-        {pid: '1', parents: [], synonym: [], prefLabel: 'a'},
-        {pid: '2', parents: [], synonym: [], prefLabel: 'b'},
-        {pid: '3', parents: [], synonym: [], prefLabel: 'c'},
+        {pid: '1', parents: [], synonym: [], prefLabel: 'a', children: []},
+        {pid: '2', parents: [], synonym: [], prefLabel: 'b', children: []},
+        {pid: '3', parents: [], synonym: [], prefLabel: 'c', children: []},
       ];
       GitHubOwlTechnique.parentsSet = new Set(['1', '2']);
-      expect(GitHubOwlTechnique.filterLeaves()).to.be.eql(['3']);
+      expect(
+        GitHubOwlTechnique.filterLeaves({
+          children: {'1': ['2']},
+          leaves: [],
+          parents: {},
+        }),
+      ).to.be.eql(['3']);
+      expect(GitHubOwlTechnique.collection[0].children).to.be.eql(['2']);
       done();
     });
   });
@@ -374,28 +381,27 @@ describe('GitHubOwlTechnique', () => {
             prefLabel: 'label1',
             parents: [],
             synonym: [],
+            children: ['http://class2/label2', 'class3'],
           },
           {
             pid: 'http://class2/label2',
             prefLabel: 'label2',
             parents: ['class1'],
             synonym: ['synonym1', 'synonym2'],
+            children: ['class3'],
           },
           {
             pid: 'class3',
             prefLabel: 'label3',
             parents: ['class1', 'http://class2/label2'],
             synonym: [],
+            children: [],
           },
         ],
         relatives: {
           class1: new Set(['class1', 'http://class2/label2', 'class3']),
           'http://class2/label2': new Set(['http://class2/label2', 'class3']),
           class3: new Set(['class3']),
-        },
-        firstDescendants: {
-          class1: ['http://class2/label2', 'class3'],
-          'http://class2/label2': ['class3'],
         },
       };
       sandbox
@@ -419,6 +425,7 @@ describe('GitHubOwlTechnique', () => {
           prefLabel: 'a',
           synonym: ['A'],
           parents: ['1'],
+          children: [],
         };
         const o = {leaves: [], parents: {}, children: {'1': ['2']}};
         const expected = {children: {'1': ['2', '3']}, leaves: [], parents: {}};
