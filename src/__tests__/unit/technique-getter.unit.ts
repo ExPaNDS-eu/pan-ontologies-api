@@ -343,9 +343,14 @@ describe('GitHubOwlTechnique', () => {
   });
 
   describe('parents', () => {
-    it('checks the synonym from the xml queried file', done => {
+    it('checks the parents from the xml queried file', done => {
       const item = querySelectorXml[2];
-      const parents = ['class1', 'http://class2/label2'];
+      const parents = [
+        'class1',
+        'http://class2/label2',
+        'aDescription5',
+        'aDescription6',
+      ];
       expect(GitHubOwlTechnique.parents(item)).to.be.eql(parents);
       expect(GitHubOwlTechnique.parentsSet).to.be.eql(new Set(parents));
       done();
@@ -393,7 +398,13 @@ describe('GitHubOwlTechnique', () => {
           {
             pid: 'class3',
             prefLabel: 'label3',
-            parents: ['class1', 'http://class2/label2'],
+            parents: [
+              'class1',
+              'http://class2/label2',
+              'aDescription5',
+              'aDescription6',
+              'class5',
+            ],
             synonym: [],
             children: [],
           },
@@ -402,6 +413,9 @@ describe('GitHubOwlTechnique', () => {
           class1: new Set(['class1', 'http://class2/label2', 'class3']),
           'http://class2/label2': new Set(['http://class2/label2', 'class3']),
           class3: new Set(['class3']),
+          aDescription5: new Set(['aDescription5', 'class3']),
+          aDescription6: new Set(['aDescription6', 'class3']),
+          class5: new Set(['class5', 'class3']),
         },
       };
       sandbox

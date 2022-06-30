@@ -62,12 +62,12 @@ configs.forEach(conf => {
       const res = await client.get(`/techniques/${pidEncoded}`).expect(200);
       expect(res.body.pid).to.be.eql(pid);
       expect(res.body.children).to.be.eql([]);
-      expect(res.body.parents).to.be.eql([
-        'http://purl.org/pan-science/PaNET/PaNET01125',
-        'http://purl.org/pan-science/PaNET/PaNET01034',
-        'http://purl.org/pan-science/PaNET/PaNET01043',
+      expect(res.body.parents.sort()).to.be.eql([
         'http://purl.org/pan-science/PaNET/PaNET00300',
         'http://purl.org/pan-science/PaNET/PaNET01012',
+        'http://purl.org/pan-science/PaNET/PaNET01034',
+        'http://purl.org/pan-science/PaNET/PaNET01043',
+        'http://purl.org/pan-science/PaNET/PaNET01125',
         'http://purl.org/pan-science/PaNET/PaNET01156',
       ]);
       expect(res.body.name).to.be.eql('x-ray emission spectroscopy');
