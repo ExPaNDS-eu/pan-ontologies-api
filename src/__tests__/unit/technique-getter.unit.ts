@@ -357,14 +357,14 @@ describe('GitHubOwlTechnique', () => {
       GitHubOwlTechnique.collection = [
         {pid: '1', parents: [], synonym: [], prefLabel: 'a', children: []},
         {pid: '2', parents: [], synonym: [], prefLabel: 'b', children: []},
-        {pid: '3', parents: [], synonym: [], prefLabel: 'c', children: []},
+        {pid: '3', parents: ['1'], synonym: [], prefLabel: 'c', children: []},
       ];
       GitHubOwlTechnique.parentsSet = new Set(['1', '2']);
       expect(
         GitHubOwlTechnique.filterLeaves({
           children: {'1': ['2']},
           leaves: [],
-          parents: {},
+          parents: {'3': ['1', '2']},
         }),
       ).to.be.eql(['3']);
       expect(GitHubOwlTechnique.collection[0].children).to.be.eql(['2']);
