@@ -33,10 +33,21 @@ describe('OntologyTechniquesLoopbackCacheBuilder', () => {
           const args = {
             relatives: {'1': new Set(['2', '3']), '2': new Set(['3', '4'])},
             collection: [
-              {pid: '1', prefLabel: 'a', synonym: ['A'], parents: ['A']},
-              {pid: '2', prefLabel: 'b', synonym: ['B'], parents: ['A']},
+              {
+                pid: '1',
+                prefLabel: 'a',
+                synonym: ['A'],
+                parents: ['A'],
+                children: ['2', '3'],
+              },
+              {
+                pid: '2',
+                prefLabel: 'b',
+                synonym: ['B'],
+                parents: ['A'],
+                children: ['3'],
+              },
             ],
-            firstDescendants: {'1': ['2', '3'], '2': ['3']},
           };
           const expected = [
             {
@@ -332,9 +343,9 @@ describe('OntologyTechniquesLoopbackCacheBuilder', () => {
             prefLabel: 'a',
             synonym: ['A'],
             parents: ['b'],
+            children: ['2'],
           },
         ];
-        techniqueCache.techniqueGetter.firstDescendants = {'1': ['2']};
         const expected = {
           pid: '1',
           name: 'a',

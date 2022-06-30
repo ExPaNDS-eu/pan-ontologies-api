@@ -112,6 +112,7 @@ export class OntologyTechniquesLoopbackCacheBuilder {
       name: 'prefLabel',
       synonym: 'synonym',
       pid: 'pid',
+      children: 'children',
     },
   ): Generator<Technique> {
     let index = 0;
@@ -128,7 +129,6 @@ export class OntologyTechniquesLoopbackCacheBuilder {
         {},
       );
       out.relatives = [...tech.relatives[out.pid]];
-      out.children = tech.firstDescendants[out.pid];
       out.createdAt = Date.now();
       yield out as Technique;
       index++;
