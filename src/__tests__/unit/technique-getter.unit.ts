@@ -133,7 +133,6 @@ describe('BioPortalTechniques', () => {
           const expected = {
             parents: {'1': ['3', '4'], '2': []},
             leaves: ['1'],
-            children: {'2': ['1', '2'], '1': []},
           };
           function* f(arr: techniqueGetter.TechniqueCollection[]) {
             for (const a of arr) {
@@ -232,7 +231,7 @@ describe('BioPortalTechniques', () => {
     );
   });
 
-  describe('leavesNode', () => {
+  describe('processInCollectionLoop', () => {
     context('Store leaves and children', () => {
       it('Store leaves and children', done => {
         const node = {
@@ -243,8 +242,8 @@ describe('BioPortalTechniques', () => {
           parents: [],
         };
         const o = {leaves: [], parents: {}, children: {}};
-        const expected = {children: {'1': ['2']}, leaves: [], parents: {}};
-        BioPortalTechniques.leavesNode(node, o);
+        const expected = {children: {}, leaves: [], parents: {'1': []}};
+        BioPortalTechniques.processInCollectionLoop(node, o);
         expect(o).to.be.eql(expected);
         done();
       });
@@ -355,27 +354,25 @@ describe('GitHubOwlTechnique', () => {
         'aDescription6',
       ];
       expect(GitHubOwlTechnique.parents(item)).to.be.eql(parents);
-      expect(GitHubOwlTechnique.parentsSet).to.be.eql(new Set(parents));
       done();
     });
   });
 
-  describe('filterLeaves', () => {
+  describe('postProcessCollectionAndNodes', () => {
     it('Returns the pids of the leaves and appends to an array', done => {
       GitHubOwlTechnique.collection = [
         {pid: '1', parents: [], synonym: [], prefLabel: 'a', children: []},
         {pid: '2', parents: [], synonym: [], prefLabel: 'b', children: []},
         {pid: '3', parents: ['1'], synonym: [], prefLabel: 'c', children: []},
       ];
-      GitHubOwlTechnique.parentsSet = new Set(['1', '2']);
+      const node = {
+        children: {'1': ['2'], '4': ['5', '6']},
+        leaves: [],
+        parents: {},
+      };
       GitHubOwlTechnique.equivalentClasses = {'1': ['4']};
-      expect(
-        GitHubOwlTechnique.filterLeaves({
-          children: {'1': ['2'], '4': ['5', '6']},
-          leaves: [],
-          parents: {},
-        }),
-      ).to.be.eql(['3']);
+      GitHubOwlTechnique.postProcessCollectionAndNodes(node);
+      expect(node.leaves).to.be.eql(['2', '3']);
       expect(GitHubOwlTechnique.collection[0].children).to.be.eql([
         '2',
         '5',
@@ -440,7 +437,7 @@ describe('GitHubOwlTechnique', () => {
     });
   });
 
-  describe('leavesNode', () => {
+  describe('processInCollectionLoop', () => {
     it('Store leaves and children', done => {
       const node = {
         pid: '3',
@@ -451,7 +448,7 @@ describe('GitHubOwlTechnique', () => {
       };
       const o = {leaves: [], parents: {}, children: {'1': ['2']}};
       const expected = {children: {'1': ['2', '3']}, leaves: [], parents: {}};
-      GitHubOwlTechnique.leavesNode(node, o);
+      GitHubOwlTechnique.processInCollectionLoop(node, o);
       expect(o).to.be.eql(expected);
       done();
     });
@@ -513,6 +510,20 @@ describe('GitHubOwlTechnique', () => {
         class6: ['class3'],
         class7: ['class3'],
       });
+      done();
+    });
+  });
+
+  describe('filterLeaves', () => {
+    it('return pid if children is empty list', done => {
+      const node = {
+        pid: '3',
+        prefLabel: 'a',
+        synonym: ['A'],
+        parents: ['1', '2'],
+        children: [],
+      };
+      expect(GitHubOwlTechnique.filterLeaves(node)).to.be.eql('3');
       done();
     });
   });
