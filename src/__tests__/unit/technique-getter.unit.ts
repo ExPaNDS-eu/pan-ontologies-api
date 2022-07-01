@@ -2,7 +2,11 @@ import {expect} from 'chai';
 import {createSandbox} from 'sinon';
 import superagent = require('superagent');
 import * as techniqueGetter from '../../misc/technique-getter';
-import {xmlContent, querySelectorXml} from '../fixtures/MockStubs';
+import {
+  xmlContent,
+  querySelectorXml,
+  intersectionOfXml,
+} from '../fixtures/MockStubs';
 const sandbox = createSandbox();
 
 afterEach(done => {
@@ -343,9 +347,13 @@ describe('GitHubOwlTechnique', () => {
   });
 
   describe('parents', () => {
-    it('checks the synonym from the xml queried file', done => {
+    it('checks the parents from the xml queried file', done => {
       const item = querySelectorXml[2];
-      const parents = ['class1', 'http://class2/label2'];
+      const parents = [
+        'http://class2/label2',
+        'aDescription5',
+        'aDescription6',
+      ];
       expect(GitHubOwlTechnique.parents(item)).to.be.eql(parents);
       expect(GitHubOwlTechnique.parentsSet).to.be.eql(new Set(parents));
       done();
@@ -357,17 +365,23 @@ describe('GitHubOwlTechnique', () => {
       GitHubOwlTechnique.collection = [
         {pid: '1', parents: [], synonym: [], prefLabel: 'a', children: []},
         {pid: '2', parents: [], synonym: [], prefLabel: 'b', children: []},
-        {pid: '3', parents: [], synonym: [], prefLabel: 'c', children: []},
+        {pid: '3', parents: ['1'], synonym: [], prefLabel: 'c', children: []},
       ];
       GitHubOwlTechnique.parentsSet = new Set(['1', '2']);
+      GitHubOwlTechnique.equivalentClasses = {'1': ['4']};
       expect(
         GitHubOwlTechnique.filterLeaves({
-          children: {'1': ['2']},
+          children: {'1': ['2'], '4': ['5', '6']},
           leaves: [],
           parents: {},
         }),
       ).to.be.eql(['3']);
-      expect(GitHubOwlTechnique.collection[0].children).to.be.eql(['2']);
+      expect(GitHubOwlTechnique.collection[0].children).to.be.eql([
+        '2',
+        '5',
+        '6',
+      ]);
+      expect(GitHubOwlTechnique.collection[2].parents).to.be.eql(['1', '4']);
       done();
     });
   });
@@ -381,27 +395,36 @@ describe('GitHubOwlTechnique', () => {
             prefLabel: 'label1',
             parents: [],
             synonym: [],
-            children: ['http://class2/label2', 'class3'],
+            children: ['class3'],
           },
           {
             pid: 'http://class2/label2',
             prefLabel: 'label2',
-            parents: ['class1'],
+            parents: [],
             synonym: ['synonym1', 'synonym2'],
             children: ['class3'],
           },
           {
             pid: 'class3',
             prefLabel: 'label3',
-            parents: ['class1', 'http://class2/label2'],
+            parents: [
+              'http://class2/label2',
+              'aDescription5',
+              'aDescription6',
+              'class1',
+              'class5',
+            ],
             synonym: [],
             children: [],
           },
         ],
         relatives: {
-          class1: new Set(['class1', 'http://class2/label2', 'class3']),
+          class1: new Set(['class1', 'class3']),
           'http://class2/label2': new Set(['http://class2/label2', 'class3']),
           class3: new Set(['class3']),
+          aDescription5: new Set(['aDescription5', 'class3']),
+          aDescription6: new Set(['aDescription6', 'class3']),
+          class5: new Set(['class5', 'class3']),
         },
       };
       sandbox
@@ -418,21 +441,79 @@ describe('GitHubOwlTechnique', () => {
   });
 
   describe('leavesNode', () => {
-    context('Store leaves and children', () => {
-      it('Store leaves and children', done => {
-        const node = {
-          pid: '3',
-          prefLabel: 'a',
-          synonym: ['A'],
-          parents: ['1'],
-          children: [],
-        };
-        const o = {leaves: [], parents: {}, children: {'1': ['2']}};
-        const expected = {children: {'1': ['2', '3']}, leaves: [], parents: {}};
-        GitHubOwlTechnique.leavesNode(node, o);
-        expect(o).to.be.eql(expected);
-        done();
+    it('Store leaves and children', done => {
+      const node = {
+        pid: '3',
+        prefLabel: 'a',
+        synonym: ['A'],
+        parents: ['1'],
+        children: [],
+      };
+      const o = {leaves: [], parents: {}, children: {'1': ['2']}};
+      const expected = {children: {'1': ['2', '3']}, leaves: [], parents: {}};
+      GitHubOwlTechnique.leavesNode(node, o);
+      expect(o).to.be.eql(expected);
+      done();
+    });
+  });
+
+  describe('childrenFromEquivalentClass', () => {
+    it('Add equivalent classes to children', done => {
+      const o = {
+        leaves: [],
+        parents: {},
+        children: {'1': ['2'], '4': ['5', '6']},
+      };
+      GitHubOwlTechnique.equivalentClasses = {'1': ['4']};
+      expect(GitHubOwlTechnique.childrenFromEquivalentClass(o, '1')).to.be.eql([
+        '2',
+        '5',
+        '6',
+      ]);
+      done();
+    });
+  });
+
+  describe('parentsFromEquivalentClass', () => {
+    it('Add equivalent classes to parents', done => {
+      const node = {
+        pid: '3',
+        prefLabel: 'a',
+        synonym: ['A'],
+        parents: ['1', '2'],
+        children: [],
+      };
+      GitHubOwlTechnique.equivalentClasses = {'2': ['4', '5']};
+      expect(GitHubOwlTechnique.parentsFromEquivalentClass(node)).to.be.eql([
+        '1',
+        '2',
+        '4',
+        '5',
+      ]);
+      done();
+    });
+  });
+
+  describe('intersectionOf', () => {
+    it('checks the intersectionOf from the xml queried file', done => {
+      expect(GitHubOwlTechnique.intersectionOf(intersectionOfXml[0])).to.be.eql(
+        ['aDescription5', 'aDescription6'],
+      );
+      done();
+    });
+  });
+
+  describe('equivalentClass', () => {
+    it('checks the equivalentClass from the xml queried file', done => {
+      expect(GitHubOwlTechnique.equivalentClass(querySelectorXml[2])).to.be.eql(
+        ['aDescription5', 'aDescription6'],
+      );
+      expect(GitHubOwlTechnique.equivalentClasses).to.be.eql({
+        class3: ['class6', 'class7'],
+        class6: ['class3'],
+        class7: ['class3'],
       });
+      done();
     });
   });
 });

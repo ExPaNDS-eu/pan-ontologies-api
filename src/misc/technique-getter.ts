@@ -113,6 +113,7 @@ export class GitHubOwlTechnique extends OntologyTechnique {
   parentsSet: Set<string>;
   url: string;
   collection: OwlTechniqueCollection[];
+  equivalentClasses: {[key: string]: string[]};
 
   constructor(config: GitHubGetter) {
     super();
@@ -123,6 +124,7 @@ export class GitHubOwlTechnique extends OntologyTechnique {
     this.commit = config.commit ?? 'master';
     this.file = config.file ?? 'source/PaNET.owl';
     this.parentsSet = new Set();
+    this.equivalentClasses = {};
     this.keys.push(...['prefLabel', 'synonym']);
   }
 
@@ -139,6 +141,43 @@ export class GitHubOwlTechnique extends OntologyTechnique {
     return xmlParsed.window.document.querySelectorAll(
       'owl\\:Class[rdf\\:about]',
     );
+  }
+
+  equivalentClass(item: Element): string[] {
+    const pid = this.pid(item);
+    const eqClasses = item.getElementsByTagName('owl:equivalentClass');
+    const intersections: string[] = [];
+    let i = 0;
+    while (i < eqClasses.length) {
+      const klass = this.pid(eqClasses[i], 'rdf:resource');
+      if (klass) {
+        this.equivalentClasses[pid] = (
+          this.equivalentClasses[pid] || []
+        ).concat(klass);
+        this.equivalentClasses[klass] = (
+          this.equivalentClasses[klass] || []
+        ).concat(pid);
+      } else intersections.push(...this.intersectionOf(eqClasses[i]));
+      i++;
+    }
+    return intersections;
+  }
+
+  intersectionOf(eqClass: Element) {
+    const intersection = eqClass.getElementsByTagName('owl:intersectionof');
+    const intersections = [];
+    let j = 0;
+    while (j < intersection.length) {
+      let k = 0;
+      const intersectionClasses =
+        intersection[j].getElementsByTagName('rdf:description');
+      while (k < intersectionClasses.length) {
+        intersections.push(this.pid(intersectionClasses[k], 'rdf:about'));
+        k++;
+      }
+      j++;
+    }
+    return intersections;
   }
 
   pid(item: Element, key = 'rdf:about'): string {
@@ -173,7 +212,11 @@ export class GitHubOwlTechnique extends OntologyTechnique {
       this.parentsSet.add(parent);
       i++;
     }
-    return parentsList;
+    const parents = [
+      ...new Set([...parentsList, ...this.equivalentClass(item)]),
+    ];
+    this.parentsSet = new Set([...this.parentsSet, ...parents]);
+    return parents;
   }
 
   buildNodes(
@@ -184,6 +227,34 @@ export class GitHubOwlTechnique extends OntologyTechnique {
     return o;
   }
 
+  childrenFromEquivalentClass(o: BaseTechniqueNodes, pid: string) {
+    return [
+      ...new Set([
+        ...(o['children'][pid] || []),
+        ...(this.equivalentClasses[pid] || []).reduce(
+          (eq: string[], c: string) => (
+            eq.push(...(o['children'][c] || [])), eq
+          ),
+          [],
+        ),
+      ]),
+    ];
+  }
+
+  parentsFromEquivalentClass(node: OwlTechniqueCollection) {
+    return [
+      ...new Set([
+        ...node.parents,
+        ...node.parents.reduce(
+          (eq: string[], p: string) => (
+            eq.push(...(this.equivalentClasses[p] || [])), eq
+          ),
+          [],
+        ),
+      ]),
+    ];
+  }
+
   leavesNode(node: OwlTechniqueCollection, o: BaseTechniqueNodes) {
     for (const parent of node.parents)
       o['children'][parent] = (o['children'][parent] || []).concat(node.pid);
@@ -192,7 +263,9 @@ export class GitHubOwlTechnique extends OntologyTechnique {
   filterLeaves(o: BaseTechniqueNodes): string[] {
     return this.collection.reduce(
       (out: string[], e) => (
-        (e['children'] = o['children'][e.pid] || []),
+        (e['children'] = this.childrenFromEquivalentClass(o, e.pid)),
+        (e['parents'] = this.parentsFromEquivalentClass(e)),
+        (o['parents'][e.pid] = e.parents),
         !this.parentsSet.has(e.pid) ? out.push(e.pid) : null,
         out
       ),
