@@ -113,6 +113,7 @@ export class OntologyTechniquesLoopbackCacheBuilder {
       synonym: 'synonym',
       pid: 'pid',
       children: 'children',
+      parents: 'parents',
     },
   ): Generator<Technique> {
     let index = 0;
