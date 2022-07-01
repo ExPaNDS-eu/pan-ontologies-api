@@ -19,6 +19,8 @@ export const xmlContent = `<?xml version="1.0"?>
         <rdfs:subClassOf rdf:resource="class1"/>
         <rdfs:subClassOf rdf:resource="http://class2/label2"/>
         <rdfs:label rdf:datatype="aLabel">label3</rdfs:label>
+        <owl:equivalentClass rdf:resource="class5"/>
+        <owl:equivalentClass rdf:resource="class6"/>
         <owl:equivalentClass>
             <owl:Class>
                 <owl:intersectionOf rdf:parseType="Collection">
@@ -31,6 +33,23 @@ export const xmlContent = `<?xml version="1.0"?>
 
 </rdf:RDF>`;
 
+const intersectionOf = `<?xml version="1.0"?>
+<rdf:RDF xmlns="aXML">
+
+    <owl:Class>
+        <owl:intersectionOf rdf:parseType="Collection">
+            <rdf:Description rdf:about="aDescription5"/>
+            <rdf:Description rdf:about="aDescription6"/>
+        </owl:intersectionOf>
+    </owl:Class>
+    </owl:Class>
+
+</rdf:RDF>`;
+
 export const querySelectorXml = new JSDOM(
   xmlContent,
 ).window.document.querySelectorAll('owl\\:Class[rdf\\:about]');
+
+export const intersectionOfXml = new JSDOM(
+  intersectionOf,
+).window.document.querySelectorAll('owl\\:Class');
