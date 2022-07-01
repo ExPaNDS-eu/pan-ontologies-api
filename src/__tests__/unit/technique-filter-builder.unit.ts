@@ -57,7 +57,6 @@ describe('OntologyTechniquesLoopbackCacheBuilder', () => {
               relatives: ['2', '3'],
               createdAt: 1,
               children: ['2', '3'],
-              parents: ['A'],
             },
             {
               pid: '2',
@@ -66,7 +65,6 @@ describe('OntologyTechniquesLoopbackCacheBuilder', () => {
               relatives: ['3', '4'],
               createdAt: 1,
               children: ['3'],
-              parents: ['A'],
             },
           ];
 
@@ -355,7 +353,6 @@ describe('OntologyTechniquesLoopbackCacheBuilder', () => {
           relatives: ['1', '2'],
           createdAt: 10,
           children: ['2'],
-          parents: ['b'],
         };
         sandbox.stub(Date, 'now').returns(10);
         sandbox.stub(techniqueCache.cache, 'get').resolves([]);

@@ -51,7 +51,6 @@ configs.forEach(conf => {
         expect(technique).to.have.property('synonym');
         expect(technique).to.have.property('relatives');
         expect(technique).to.have.property('children');
-        expect(technique).to.have.property('parents');
         expect(technique).to.have.property('createdAt');
       });
     });
@@ -62,14 +61,6 @@ configs.forEach(conf => {
       const res = await client.get(`/techniques/${pidEncoded}`).expect(200);
       expect(res.body.pid).to.be.eql(pid);
       expect(res.body.children).to.be.eql([]);
-      expect(res.body.parents.sort()).to.be.eql([
-        'http://purl.org/pan-science/PaNET/PaNET00300',
-        'http://purl.org/pan-science/PaNET/PaNET01012',
-        'http://purl.org/pan-science/PaNET/PaNET01034',
-        'http://purl.org/pan-science/PaNET/PaNET01043',
-        'http://purl.org/pan-science/PaNET/PaNET01125',
-        'http://purl.org/pan-science/PaNET/PaNET01156',
-      ]);
       expect(res.body.name).to.be.eql('x-ray emission spectroscopy');
       expect(res.body.synonym).to.be.eql(['XES']);
       expect(res.body.relatives).to.be.eql([pid]);

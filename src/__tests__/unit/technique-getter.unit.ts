@@ -350,7 +350,6 @@ describe('GitHubOwlTechnique', () => {
     it('checks the parents from the xml queried file', done => {
       const item = querySelectorXml[2];
       const parents = [
-        'class1',
         'http://class2/label2',
         'aDescription5',
         'aDescription6',
@@ -372,12 +371,16 @@ describe('GitHubOwlTechnique', () => {
       GitHubOwlTechnique.equivalentClasses = {'1': ['4']};
       expect(
         GitHubOwlTechnique.filterLeaves({
-          children: {'1': ['2']},
+          children: {'1': ['2'], '4': ['5', '6']},
           leaves: [],
           parents: {},
         }),
       ).to.be.eql(['3']);
-      expect(GitHubOwlTechnique.collection[0].children).to.be.eql(['2']);
+      expect(GitHubOwlTechnique.collection[0].children).to.be.eql([
+        '2',
+        '5',
+        '6',
+      ]);
       expect(GitHubOwlTechnique.collection[2].parents).to.be.eql(['1', '4']);
       done();
     });
@@ -392,12 +395,12 @@ describe('GitHubOwlTechnique', () => {
             prefLabel: 'label1',
             parents: [],
             synonym: [],
-            children: ['http://class2/label2', 'class3'],
+            children: ['class3'],
           },
           {
             pid: 'http://class2/label2',
             prefLabel: 'label2',
-            parents: ['class1'],
+            parents: [],
             synonym: ['synonym1', 'synonym2'],
             children: ['class3'],
           },
@@ -405,10 +408,10 @@ describe('GitHubOwlTechnique', () => {
             pid: 'class3',
             prefLabel: 'label3',
             parents: [
-              'class1',
               'http://class2/label2',
               'aDescription5',
               'aDescription6',
+              'class1',
               'class5',
             ],
             synonym: [],
@@ -416,7 +419,7 @@ describe('GitHubOwlTechnique', () => {
           },
         ],
         relatives: {
-          class1: new Set(['class1', 'http://class2/label2', 'class3']),
+          class1: new Set(['class1', 'class3']),
           'http://class2/label2': new Set(['http://class2/label2', 'class3']),
           class3: new Set(['class3']),
           aDescription5: new Set(['aDescription5', 'class3']),
@@ -506,9 +509,9 @@ describe('GitHubOwlTechnique', () => {
         ['aDescription5', 'aDescription6'],
       );
       expect(GitHubOwlTechnique.equivalentClasses).to.be.eql({
-        class3: ['class5', 'class6'],
-        class5: ['class3'],
+        class3: ['class6', 'class7'],
         class6: ['class3'],
+        class7: ['class3'],
       });
       done();
     });
