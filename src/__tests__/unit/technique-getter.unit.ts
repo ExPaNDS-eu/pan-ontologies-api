@@ -133,7 +133,6 @@ describe('BioPortalTechniques', () => {
           const expected = {
             parents: {'1': ['3', '4'], '2': []},
             leaves: ['1'],
-            children: {},
           };
           function* f(arr: techniqueGetter.TechniqueCollection[]) {
             for (const a of arr) {

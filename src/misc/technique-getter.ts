@@ -23,6 +23,9 @@ export type TechniqueCollection =
 interface BaseTechniqueNodes {
   leaves: string[];
   parents: {[key: string]: string[]};
+}
+
+interface GitHubTechniqueNodes extends BaseTechniqueNodes {
   children: {[key: string]: string[]};
 }
 
@@ -71,7 +74,7 @@ class OntologyTechnique implements TechniqueOntology {
   }
 
   buildNodes(collection: Generator<TechniqueCollection>): BaseTechniqueNodes {
-    const o: BaseTechniqueNodes = {leaves: [], parents: {}, children: {}};
+    const o: BaseTechniqueNodes = {leaves: [], parents: {}};
     for (const node of collection) {
       this.processInCollectionLoop(node, o);
     }
@@ -222,11 +225,11 @@ export class GitHubOwlTechnique extends OntologyTechnique {
     collection: Generator<OwlTechniqueCollection>,
   ): BaseTechniqueNodes {
     const o = super.buildNodes(collection);
-    this.postProcessCollectionAndNodes(o);
+    this.postProcessCollectionAndNodes(o as GitHubTechniqueNodes);
     return o;
   }
 
-  childrenFromEquivalentClass(o: BaseTechniqueNodes, pid: string) {
+  childrenFromEquivalentClass(o: GitHubTechniqueNodes, pid: string) {
     return [
       ...new Set([
         ...(o['children'][pid] || []),
@@ -254,12 +257,16 @@ export class GitHubOwlTechnique extends OntologyTechnique {
     ];
   }
 
-  processInCollectionLoop(node: OwlTechniqueCollection, o: BaseTechniqueNodes) {
+  processInCollectionLoop(
+    node: OwlTechniqueCollection,
+    o: GitHubTechniqueNodes,
+  ) {
+    if (!o['children']) o['children'] = {};
     for (const parent of node.parents)
       o['children'][parent] = (o['children'][parent] || []).concat(node.pid);
   }
 
-  postProcessCollectionAndNodes(o: BaseTechniqueNodes) {
+  postProcessCollectionAndNodes(o: GitHubTechniqueNodes) {
     this.collection.map(e => {
       e['children'] = this.childrenFromEquivalentClass(o, e.pid);
       e['parents'] = this.parentsFromEquivalentClass(e);
