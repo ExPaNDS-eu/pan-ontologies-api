@@ -76,12 +76,22 @@ export class TechniqueController {
 
   @get('/techniques/pan-ontology')
   @response(200, {
-    description: 'Array of Technique model instances',
+    description: 'PIDs filter with condition',
     content: {
       'application/json': {
         schema: {
-          type: 'array',
-          items: getModelSchemaRef(Technique, {includeRelations: true}),
+          type: 'object',
+          title: 'LoopbackCondtionOnPIDs',
+          properties: {
+            pid: {
+              type: 'object', 
+              properties: {
+                loopbackCondtionOnPIDs: {
+                  type: 'object'
+                }
+              }
+            }
+          }
         },
       },
     },
