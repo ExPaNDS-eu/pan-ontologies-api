@@ -30,10 +30,13 @@ interface GitHubTechniqueNodes extends BaseTechniqueNodes {
 }
 
 interface BioPortalNodes {
+  // eslint-disable-next-line  @typescript-eslint/naming-convention
   '@id': string;
   prefLabel: string;
   synonym: string[];
+  // eslint-disable-next-line  @typescript-eslint/naming-convention
   children: {'@id': string}[];
+  // eslint-disable-next-line  @typescript-eslint/naming-convention
   parents: {'@id': string; prefLabel?: string | null}[];
 }
 
