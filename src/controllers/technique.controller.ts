@@ -84,14 +84,14 @@ export class TechniqueController {
           title: 'LoopbackCondtionOnPIDs',
           properties: {
             pid: {
-              type: 'object', 
+              type: 'object',
               properties: {
                 loopbackCondtionOnPIDs: {
-                  type: 'object'
-                }
-              }
-            }
-          }
+                  type: 'object',
+                },
+              },
+            },
+          },
         },
       },
     },
