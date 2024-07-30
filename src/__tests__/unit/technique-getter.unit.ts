@@ -262,7 +262,7 @@ describe('GitHubOwlTechnique', () => {
   });
 
   describe('composeURL', () => {
-    const expectedURL = 'http://aurl/aCommit/aFile';
+    const expectedURL = 'http://aurl/download/aCommit/aFile';
     const tests = [
       {
         args: new techniqueGetter.GitHubOwlTechnique({
