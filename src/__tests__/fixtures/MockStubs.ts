@@ -1,7 +1,19 @@
 import {JSDOM} from 'jsdom';
 
 export const xmlContent = `<?xml version="1.0"?>
-<rdf:RDF xmlns="aXML">
+<rdf:RDF xmlns="http://purl.org/pan-science/PaNET/PaNET.owl#"
+     xml:base="http://purl.org/pan-science/PaNET/PaNET.owl"
+     xmlns:obo="http://purl.obolibrary.org/obo/"
+     xmlns:owl="http://www.w3.org/2002/07/owl#"
+     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:xml="http://www.w3.org/XML/1998/namespace"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+     xmlns:foaf="http://xmlns.com/foaf/0.1/"
+     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+     xmlns:skos="http://www.w3.org/2004/02/skos/core#"
+     xmlns:vann="http://purl.org/vocab/vann/"
+     xmlns:PaNET="PaNET:"
+     xmlns:terms="http://purl.org/dc/terms/">
 
     <owl:Class rdf:about="class1">
         <owl:equivalentClass rdf:resource="http://class2/label2"/>
