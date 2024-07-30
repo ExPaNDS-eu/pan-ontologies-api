@@ -299,7 +299,7 @@ describe('GitHubOwlTechnique', () => {
       sandbox
         .stub(superagent, 'get')
         // eslint-disable-next-line  @typescript-eslint/no-explicit-any
-        .returns({text: xmlContent} as any);
+        .returns({responseType: () => ({body: xmlContent})} as any);
       const data = await GitHubOwlTechnique.getCollection();
       expect(data.length).to.be.eql(3);
     });

@@ -30,7 +30,7 @@ configs.forEach(conf => {
           .stub(BioPortalTechniques.prototype, 'getCollection')
           .resolves(bioportalResponse);
       // eslint-disable-next-line  @typescript-eslint/no-explicit-any
-      else sandbox.stub(superagent, 'get').resolves(githubRespone as any);
+      else sandbox.stub(superagent, 'get').returns(githubRespone as any);
       ({app, client} = await setupApplication({
         technique: {class: conf, cache: cache},
       }));
