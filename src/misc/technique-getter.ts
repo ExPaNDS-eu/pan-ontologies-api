@@ -128,8 +128,10 @@ export class GitHubOwlTechnique extends OntologyTechnique {
     config = config ?? {};
     this.repoURL =
       config.url ??
-      'https://github.com/ExPaNDS-eu/ExPaNDS-experimental-techniques-ontology/releases/'
-    this.commit = config.commit? `download/${config.commit}`: 'latest/download';
+      'https://github.com/ExPaNDS-eu/ExPaNDS-experimental-techniques-ontology/releases/';
+    this.commit = config.commit
+      ? `download/${config.commit}`
+      : 'latest/download';
     this.file = config.file ?? 'PaNET.owl';
     this.equivalentClasses = {};
     this.keys.push(...['prefLabel', 'synonym']);
