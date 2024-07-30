@@ -145,8 +145,8 @@ export class GitHubOwlTechnique extends OntologyTechnique {
   }
 
   async getCollection(): Promise<NodeList> {
-    const xmlFile = await superagent.get(this.url);
-    const xmlParsed = new jsdom.JSDOM(xmlFile.text);
+    const xmlFile = await superagent.get(this.url).responseType('blob');
+    const xmlParsed = new jsdom.JSDOM(xmlFile.body.toString('utf-8'));
     return xmlParsed.window.document.querySelectorAll(
       'owl\\:Class[rdf\\:about]',
     );
