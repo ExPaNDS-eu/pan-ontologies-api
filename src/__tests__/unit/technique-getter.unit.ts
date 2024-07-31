@@ -348,11 +348,7 @@ describe('GitHubOwlTechnique', () => {
   describe('parents', () => {
     it('checks the parents from the xml queried file', done => {
       const item = querySelectorXml[2];
-      const parents = [
-        'http://class2/label2',
-        'aDescription5',
-        'aDescription6',
-      ];
+      const parents = ['http://class2/label2', 'aDescription6'];
       expect(GitHubOwlTechnique.parents(item)).to.be.eql(parents);
       done();
     });
@@ -406,7 +402,6 @@ describe('GitHubOwlTechnique', () => {
             prefLabel: 'label3',
             parents: [
               'http://class2/label2',
-              'aDescription5',
               'aDescription6',
               'class1',
               'class5',
@@ -419,7 +414,6 @@ describe('GitHubOwlTechnique', () => {
           class1: new Set(['class1', 'class3']),
           'http://class2/label2': new Set(['http://class2/label2', 'class3']),
           class3: new Set(['class3']),
-          aDescription5: new Set(['aDescription5', 'class3']),
           aDescription6: new Set(['aDescription6', 'class3']),
           class5: new Set(['class5', 'class3']),
         },
@@ -524,6 +518,18 @@ describe('GitHubOwlTechnique', () => {
         children: [],
       };
       expect(GitHubOwlTechnique.filterLeaves(node)).to.be.eql('3');
+      done();
+    });
+  });
+
+  describe('disjointWith', () => {
+    it('checks the equivalentClass from the xml queried file', done => {
+      expect(GitHubOwlTechnique.disjointWith(querySelectorXml[2])).to.be.eql([
+        'aDescription5',
+      ]);
+      expect(GitHubOwlTechnique.disjointClasses).to.be.eql({
+        class3: ['aDescription5'],
+      });
       done();
     });
   });

@@ -29,6 +29,7 @@ export const xmlContent = `<?xml version="1.0"?>
 
     <owl:Class rdf:about="class3">
         <rdfs:subClassOf rdf:resource="http://class2/label2"/>
+        <owl:disjointWith rdf:resource="aDescription5"/>
         <rdfs:label rdf:datatype="aLabel">label3</rdfs:label>
         <owl:equivalentClass rdf:resource="class6"/>
         <owl:equivalentClass rdf:resource="class7"/>
