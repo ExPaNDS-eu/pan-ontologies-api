@@ -122,6 +122,7 @@ export class GitHubOwlTechnique extends OntologyTechnique {
   url: string;
   collection: OwlTechniqueCollection[];
   equivalentClasses: {[key: string]: string[]};
+  disjointClasses: {[key: string]: string[]};
 
   constructor(config: GitHubGetter) {
     super();
@@ -134,6 +135,7 @@ export class GitHubOwlTechnique extends OntologyTechnique {
       : 'latest/download';
     this.file = config.file ?? 'PaNET.owl';
     this.equivalentClasses = {};
+    this.disjointClasses = {};
     this.keys.push(...['prefLabel', 'synonym']);
   }
 
@@ -222,10 +224,9 @@ export class GitHubOwlTechnique extends OntologyTechnique {
       parentsList.push(parent);
       i++;
     }
-    const parents = [
-      ...new Set([...parentsList, ...this.equivalentClass(item)]),
-    ];
-    return parents;
+    const parents = new Set([...parentsList, ...this.equivalentClass(item)]);
+    this.disjointWith(item).forEach(disjoint => parents.delete(disjoint));
+    return [...parents];
   }
 
   buildNodes(
@@ -264,6 +265,20 @@ export class GitHubOwlTechnique extends OntologyTechnique {
     ];
   }
 
+  disjointWith(item: Element) {
+    const pid = this.pid(item);
+    const disjointClasses = item.getElementsByTagName('owl:disjointWith');
+    let i = 0;
+    const disjoints = [];
+    while (i < disjointClasses.length) {
+      const klass = this.pid(disjointClasses[i], 'rdf:resource');
+      if (klass) disjoints.push(klass);
+      i++;
+    }
+    this.disjointClasses[pid] = disjoints;
+    return disjoints;
+  }
+
   processInCollectionLoop(
     node: OwlTechniqueCollection,
     o: GitHubTechniqueNodes,
@@ -280,6 +295,14 @@ export class GitHubOwlTechnique extends OntologyTechnique {
       o['parents'][e.pid] = e.parents;
       o['leaves'] = o['leaves'].concat(this.filterLeaves(e));
     });
+  }
+
+  async build(): Promise<this> {
+    await super.build();
+    Object.entries(this.disjointClasses).map(([key, value]) =>
+      value.forEach(v => this.relatives[key].delete(v)),
+    );
+    return this;
   }
 }
 
