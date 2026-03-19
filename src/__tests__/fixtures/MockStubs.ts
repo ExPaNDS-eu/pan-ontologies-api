@@ -60,15 +60,15 @@ const intersectionOf = `<?xml version="1.0"?>
 </rdf:RDF>`;
 
 const xmlDocument = new JSDOM(xmlContent, {
-    contentType: 'application/xml',
+  contentType: 'application/xml',
 }).window.document;
 
 export const querySelectorXml = Array.from(
-    xmlDocument.getElementsByTagName('owl:Class'),
+  xmlDocument.getElementsByTagName('owl:Class'),
 ).filter(item => item.getAttribute('rdf:about'));
 
 export const intersectionOfXml = Array.from(
-    new JSDOM(intersectionOf, {
-        contentType: 'application/xml',
-    }).window.document.getElementsByTagName('owl:Class'),
+  new JSDOM(intersectionOf, {
+      contentType: 'application/xml',
+  }).window.document.getElementsByTagName('owl:Class'),
 );
