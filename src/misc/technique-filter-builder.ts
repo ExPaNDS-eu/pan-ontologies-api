@@ -99,7 +99,8 @@ export class OntologyTechniquesLoopbackCacheBuilder {
   createSynonym(item: Condition<Technique>): Condition<Technique> | null {
     const synonym = Object.keys(item).reduce(
       (o: Condition<Technique>, key) => (
-        key === 'name' ? (o['synonym'] = item[key]) : (o[key] = item[key]), o
+        key === 'name' ? (o['synonym'] = item[key]) : (o[key] = item[key]),
+        o
       ),
       {},
     );
