@@ -30,13 +30,10 @@ interface GitHubTechniqueNodes extends BaseTechniqueNodes {
 }
 
 interface BioPortalNodes {
-  // eslint-disable-next-line  @typescript-eslint/naming-convention
   '@id': string;
   prefLabel: string;
   synonym: string[];
-  // eslint-disable-next-line  @typescript-eslint/naming-convention
   children: {'@id': string}[];
-  // eslint-disable-next-line  @typescript-eslint/naming-convention
   parents: {'@id': string; prefLabel?: string | null}[];
 }
 
@@ -84,7 +81,7 @@ class OntologyTechnique implements TechniqueOntology {
     return o;
   }
 
-  processInCollectionLoop(node: TechniqueCollection, o: BaseTechniqueNodes) {}
+  processInCollectionLoop(_node: TechniqueCollection, _o: BaseTechniqueNodes) {}
 
   async build(): Promise<this> {
     this.composeURL();
@@ -106,11 +103,11 @@ class OntologyTechnique implements TechniqueOntology {
     return [];
   }
 
-  pid(item: TechniqueNodes, key?: string): string | null {
+  pid(_item: TechniqueNodes, _key?: string): string | null {
     throw new Error("Method 'pid()' must be implemented.");
   }
 
-  parents(item: TechniqueNodes): string[] {
+  parents(_item: TechniqueNodes): string[] {
     throw new Error("Method 'parents()' must be implemented.");
   }
 }

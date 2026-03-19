@@ -1,5 +1,5 @@
 export const githubRespone = {
-  responseType: (value: string) => ({
+  responseType: (_value: string) => ({
     body: `<?xml version="1.0"?>
 <rdf:RDF xmlns="http://purl.org/pan-science/PaNET/PaNET.owl#"
      xml:base="http://purl.org/pan-science/PaNET/PaNET.owl"
