@@ -53,7 +53,7 @@ class OntologyTechnique implements TechniqueOntology {
   relatives: {[key: string]: Set<string>};
 
   *processCollection(
-    collection: TechniqueNodes[] | NodeList,
+    collection: ArrayLike<TechniqueNodes>,
   ): Generator<TechniqueCollection> {
     this.collection = [];
     let index = 0;
@@ -97,7 +97,7 @@ class OntologyTechnique implements TechniqueOntology {
 
   composeURL() {}
 
-  async getCollection(): Promise<BioPortalNodes[] | NodeList> {
+  async getCollection(): Promise<BioPortalNodes[] | ArrayLike<Element>> {
     throw new Error("Method 'getCollection()' must be implemented.");
   }
 
@@ -146,14 +146,14 @@ export class GitHubOwlTechnique extends OntologyTechnique {
     ).toString();
   }
 
-  async getCollection(): Promise<NodeList> {
+  async getCollection(): Promise<ArrayLike<Element>> {
     const xmlFile = await superagent.get(this.url).responseType('blob');
     const xmlParsed = new jsdom.JSDOM(xmlFile.body.toString('utf-8'), {
       contentType: 'application/xml',
     });
-    return xmlParsed.window.document.querySelectorAll(
-      'owl\\:Class[rdf\\:about]',
-    );
+    return Array.from(
+      xmlParsed.window.document.getElementsByTagName('owl:Class'),
+    ).filter(item => item.getAttribute('rdf:about'));
   }
 
   equivalentClass(item: Element): string[] {
@@ -177,13 +177,13 @@ export class GitHubOwlTechnique extends OntologyTechnique {
   }
 
   intersectionOf(eqClass: Element) {
-    const intersection = eqClass.getElementsByTagName('owl:intersectionof');
+    const intersection = eqClass.getElementsByTagName('owl:intersectionOf');
     const intersections = [];
     let j = 0;
     while (j < intersection.length) {
       let k = 0;
       const intersectionClasses =
-        intersection[j].getElementsByTagName('rdf:description');
+        intersection[j].getElementsByTagName('rdf:Description');
       while (k < intersectionClasses.length) {
         intersections.push(this.pid(intersectionClasses[k], 'rdf:about'));
         k++;

@@ -46,7 +46,9 @@ export const xmlContent = `<?xml version="1.0"?>
 </rdf:RDF>`;
 
 const intersectionOf = `<?xml version="1.0"?>
-<rdf:RDF xmlns="aXML">
+<rdf:RDF xmlns="aXML"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
 
     <owl:Class>
         <owl:intersectionOf rdf:parseType="Collection">
@@ -54,14 +56,19 @@ const intersectionOf = `<?xml version="1.0"?>
             <rdf:Description rdf:about="aDescription6"/>
         </owl:intersectionOf>
     </owl:Class>
-    </owl:Class>
 
 </rdf:RDF>`;
 
-export const querySelectorXml = new JSDOM(
-  xmlContent,
-).window.document.querySelectorAll('owl\\:Class[rdf\\:about]');
+const xmlDocument = new JSDOM(xmlContent, {
+  contentType: 'application/xml',
+}).window.document;
 
-export const intersectionOfXml = new JSDOM(
-  intersectionOf,
-).window.document.querySelectorAll('owl\\:Class');
+export const querySelectorXml = Array.from(
+  xmlDocument.getElementsByTagName('owl:Class'),
+).filter(item => item.getAttribute('rdf:about'));
+
+export const intersectionOfXml = Array.from(
+  new JSDOM(intersectionOf, {
+    contentType: 'application/xml',
+  }).window.document.getElementsByTagName('owl:Class'),
+);
