@@ -69,6 +69,6 @@ export const querySelectorXml = Array.from(
 
 export const intersectionOfXml = Array.from(
   new JSDOM(intersectionOf, {
-      contentType: 'application/xml',
+    contentType: 'application/xml',
   }).window.document.getElementsByTagName('owl:Class'),
 );
