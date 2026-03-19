@@ -9,7 +9,7 @@ import {
 import {Technique} from '../../models';
 import {givenEmptyDatabase} from '../helpers/database.helpers';
 import {createSandbox, SinonSandbox} from 'sinon';
-import superagent = require('superagent');
+import superagent from 'superagent';
 import {BioPortalTechniques} from '../../misc/technique-getter';
 import {bioportalResponse} from '../fixtures/responses/biobortal.response';
 import {githubRespone} from '../fixtures/responses/github.response';

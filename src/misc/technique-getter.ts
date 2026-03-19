@@ -1,5 +1,5 @@
 import * as jsdom from 'jsdom';
-import * as superagent from 'superagent';
+import superagent from 'superagent';
 import {URL} from 'url';
 
 import * as utils from './utils';
@@ -313,8 +313,8 @@ export class BioPortalTechniques extends OntologyTechnique {
   bioURL: string;
   url: string;
   apiKey: string;
-  headers: {};
-  queryParams: {};
+  headers: Record<string, string>;
+  queryParams: Record<string, string | number>;
 
   constructor(config: BioPortalGetter) {
     super();

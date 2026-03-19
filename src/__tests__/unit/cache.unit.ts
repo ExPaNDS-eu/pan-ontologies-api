@@ -49,8 +49,7 @@ describe('LoopbackCache', () => {
           cache
             .set('pid', args.input, args.ttl)
             .then(() => {
-              /* eslint-disable no-unused-expressions */
-              expect(createStub.calledWith(expected)).to.be.true;
+              expect(createStub.calledWith(expected)).to.equal(true);
               done();
             })
             .catch(done);
@@ -70,7 +69,7 @@ describe('LoopbackCache', () => {
         {sttl: 10, model: mock as any},
       );
       await cache.set('pid', args.input, args.ttl);
-      expect(replaceStub.calledWith(args.input.pid, expected)).to.be.true;
+      expect(replaceStub.calledWith(args.input.pid, expected)).to.equal(true);
     });
   });
 
@@ -107,7 +106,7 @@ describe('LoopbackCache', () => {
             cache
               .get(args as Filter<Entity>)
               .then(() => {
-                expect(mock[expected].calledWith(args.where)).to.be.true;
+                expect(mock[expected].calledWith(args.where)).to.equal(true);
                 done();
               })
               .catch(done);

@@ -165,7 +165,6 @@ describe('OntologyTechniquesLoopbackCacheBuilder', () => {
             .flat(args)
             .then(data => {
               expect(data).to.be.eql(expected);
-              /* eslint-disable no-unused-expressions */
               expect(
                 mock.calledWith({
                   where: {
@@ -175,7 +174,7 @@ describe('OntologyTechniquesLoopbackCacheBuilder', () => {
                     ],
                   },
                 }),
-              ).to.true;
+              ).to.equal(true);
               done();
             })
             .catch(done);
@@ -214,7 +213,6 @@ describe('OntologyTechniquesLoopbackCacheBuilder', () => {
             .andOr(args, 'and')
             .then(data => {
               expect(data).to.be.eql(expected);
-              /* eslint-disable no-unused-expressions */
               expect(
                 mock.getCall(0).calledWith({
                   where: {
@@ -224,13 +222,12 @@ describe('OntologyTechniquesLoopbackCacheBuilder', () => {
                     ],
                   },
                 }),
-              ).to.true;
-              /* eslint-disable no-unused-expressions */
+              ).to.equal(true);
               expect(
                 mock
                   .getCall(1)
                   .calledWith({where: {pid: '2'} as Where<Technique>}),
-              ).to.true;
+              ).to.equal(true);
               done();
             })
             .catch(done);
@@ -269,7 +266,6 @@ describe('OntologyTechniquesLoopbackCacheBuilder', () => {
             .andOr(args, 'or')
             .then(data => {
               expect(data).to.be.eql(expected);
-              /* eslint-disable no-unused-expressions */
               expect(
                 mock.getCall(0).calledWith({
                   where: {
@@ -279,13 +275,12 @@ describe('OntologyTechniquesLoopbackCacheBuilder', () => {
                     ],
                   },
                 }),
-              ).to.true;
-              /* eslint-disable no-unused-expressions */
+              ).to.equal(true);
               expect(
                 mock
                   .getCall(1)
                   .calledWith({where: {pid: {eq: '2'}} as Where<Technique>}),
-              ).to.true;
+              ).to.equal(true);
               done();
             })
             .catch(done);

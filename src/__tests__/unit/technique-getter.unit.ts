@@ -1,6 +1,6 @@
 import {expect} from 'chai';
 import {createSandbox} from 'sinon';
-import superagent = require('superagent');
+import superagent from 'superagent';
 import * as techniqueGetter from '../../misc/technique-getter';
 import {
   xmlContent,
@@ -23,12 +23,9 @@ describe('BioPortalTechniques', () => {
     context('Sets the url, the queryParams and the headers to use', () => {
       it('Sets the url, the queryParams and the headers to use', done => {
         BioPortalTechniques.composeURL();
-        /* eslint-disable no-unused-expressions */
-        expect(typeof BioPortalTechniques.url === 'string').to.true;
-        /* eslint-disable no-unused-expressions */
-        expect(BioPortalTechniques.headers).to.not.be.null;
-        /* eslint-disable no-unused-expressions */
-        expect(BioPortalTechniques.queryParams).to.not.be.null;
+        expect(typeof BioPortalTechniques.url === 'string').to.equal(true);
+        expect(BioPortalTechniques.headers).to.not.equal(null);
+        expect(BioPortalTechniques.queryParams).to.not.equal(null);
         done();
       });
     });

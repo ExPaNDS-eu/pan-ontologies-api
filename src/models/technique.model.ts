@@ -55,8 +55,6 @@ export class Technique extends Entity {
   }
 }
 
-export interface TechniqueRelations {
-  // describe navigational properties here
-}
+export type TechniqueRelations = Record<string, never>;
 
 export type TechniqueWithRelations = Technique & TechniqueRelations;
