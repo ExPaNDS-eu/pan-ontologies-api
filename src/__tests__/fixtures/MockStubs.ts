@@ -1,4 +1,4 @@
-import { JSDOM } from 'jsdom';
+import {JSDOM} from 'jsdom';
 
 export const xmlContent = `<?xml version="1.0"?>
 <rdf:RDF xmlns="http://purl.org/pan-science/PaNET/PaNET.owl#"
