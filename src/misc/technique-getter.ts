@@ -1,9 +1,9 @@
 import * as jsdom from 'jsdom';
 import superagent from 'superagent';
-import { URL } from 'url';
+import {URL} from 'url';
 
 import * as utils from './utils';
-import { BioPortalGetter, GitHubGetter } from '../config';
+import {BioPortalGetter, GitHubGetter} from '../config';
 
 type BaseTechniqueCollection = {
   pid: string;
@@ -22,11 +22,11 @@ export type TechniqueCollection =
 
 interface BaseTechniqueNodes {
   leaves: string[];
-  parents: { [key: string]: string[] };
+  parents: {[key: string]: string[]};
 }
 
 interface GitHubTechniqueNodes extends BaseTechniqueNodes {
-  children: { [key: string]: string[] };
+  children: {[key: string]: string[]};
 }
 
 interface BioPortalNodes {
@@ -35,22 +35,22 @@ interface BioPortalNodes {
   prefLabel: string;
   synonym: string[];
   // eslint-disable-next-line  @typescript-eslint/naming-convention
-  children: { '@id': string }[];
+  children: {'@id': string}[];
   // eslint-disable-next-line  @typescript-eslint/naming-convention
-  parents: { '@id': string; prefLabel?: string | null }[];
+  parents: {'@id': string; prefLabel?: string | null}[];
 }
 
 type TechniqueNodes = BioPortalNodes | Element;
 
 export type TechniqueOntology = {
   collection: TechniqueCollection[];
-  relatives: { [key: string]: Set<string> };
+  relatives: {[key: string]: Set<string>};
 };
 
 class OntologyTechnique implements TechniqueOntology {
   keys: string[] = ['pid', 'parents'];
   collection: BaseTechniqueCollection[];
-  relatives: { [key: string]: Set<string> };
+  relatives: {[key: string]: Set<string>};
 
   *processCollection(
     collection: ArrayLike<TechniqueNodes>,
@@ -77,14 +77,14 @@ class OntologyTechnique implements TechniqueOntology {
   }
 
   buildNodes(collection: Generator<TechniqueCollection>): BaseTechniqueNodes {
-    const o: BaseTechniqueNodes = { leaves: [], parents: {} };
+    const o: BaseTechniqueNodes = {leaves: [], parents: {}};
     for (const node of collection) {
       this.processInCollectionLoop(node, o);
     }
     return o;
   }
 
-  processInCollectionLoop(node: TechniqueCollection, o: BaseTechniqueNodes) { }
+  processInCollectionLoop(node: TechniqueCollection, o: BaseTechniqueNodes) {}
 
   async build(): Promise<this> {
     this.composeURL();
@@ -95,7 +95,7 @@ class OntologyTechnique implements TechniqueOntology {
     return this;
   }
 
-  composeURL() { }
+  composeURL() {}
 
   async getCollection(): Promise<BioPortalNodes[] | ArrayLike<Element>> {
     throw new Error("Method 'getCollection()' must be implemented.");
@@ -121,8 +121,8 @@ export class GitHubOwlTechnique extends OntologyTechnique {
   file: string;
   url: string;
   collection: OwlTechniqueCollection[];
-  equivalentClasses: { [key: string]: string[] };
-  disjointClasses: { [key: string]: string[] };
+  equivalentClasses: {[key: string]: string[]};
+  disjointClasses: {[key: string]: string[]};
 
   constructor(config: GitHubGetter) {
     super();
@@ -331,7 +331,7 @@ export class BioPortalTechniques extends OntologyTechnique {
       Accept: 'application/json',
       Authorization: `apikey token=${this.apiKey}`,
     };
-    this.queryParams = { include: 'children,prefLabel,synonym,parents' };
+    this.queryParams = {include: 'children,prefLabel,synonym,parents'};
     this.url = new URL(this.bioURL).toString();
   }
 
@@ -344,16 +344,16 @@ export class BioPortalTechniques extends OntologyTechnique {
     const page = 1;
     const res = await superagent
       .get(url)
-      .query(Object.assign(queryParams, { page: page }))
+      .query(Object.assign(queryParams, {page: page}))
       .set(headers);
     const body = JSON.parse(res.text);
     const collection = body.collection;
     const promises = utils.range(page + 1, body.pageCount).map(p =>
       superagent
         .get(url)
-        .query(Object.assign(queryParams, { page: p }))
+        .query(Object.assign(queryParams, {page: p}))
         .set(headers)
-        .then((out: { text: string }) => JSON.parse(out.text).collection),
+        .then((out: {text: string}) => JSON.parse(out.text).collection),
     );
     return collection.concat(...(await Promise.all(promises)));
   }

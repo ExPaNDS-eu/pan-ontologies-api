@@ -1,19 +1,19 @@
-import { Client, expect } from '@loopback/testlab';
-import { PanOntologiesApplication } from '../..';
-import { setupApplication } from './test-helper';
+import {Client, expect} from '@loopback/testlab';
+import {PanOntologiesApplication} from '../..';
+import {setupApplication} from './test-helper';
 import {
   expectedPanEspanded,
   panFilters,
   elementsNumber,
 } from '../fixtures/technique.testcases';
-import { Technique } from '../../models';
-import { givenEmptyDatabase } from '../helpers/database.helpers';
-import { createSandbox, SinonSandbox } from 'sinon';
+import {Technique} from '../../models';
+import {givenEmptyDatabase} from '../helpers/database.helpers';
+import {createSandbox, SinonSandbox} from 'sinon';
 import superagent from 'superagent';
-import { BioPortalTechniques } from '../../misc/technique-getter';
-import { bioportalResponse } from '../fixtures/responses/biobortal.response';
-import { githubRespone } from '../fixtures/responses/github.response';
-import { Condition } from '@loopback/repository';
+import {BioPortalTechniques} from '../../misc/technique-getter';
+import {bioportalResponse} from '../fixtures/responses/biobortal.response';
+import {githubRespone} from '../fixtures/responses/github.response';
+import {Condition} from '@loopback/repository';
 
 const configs = ['BioPortalTechniques', 'GitHubOwlTechnique'];
 configs.forEach(conf => {
@@ -21,7 +21,7 @@ configs.forEach(conf => {
     let app: PanOntologiesApplication;
     let client: Client;
     let sandbox: SinonSandbox;
-    const cache = { class: 'LoopbackCache', sttl: 100 };
+    const cache = {class: 'LoopbackCache', sttl: 100};
 
     before('select config and response', async () => {
       sandbox = createSandbox();
@@ -31,8 +31,8 @@ configs.forEach(conf => {
           .resolves(bioportalResponse);
       // eslint-disable-next-line  @typescript-eslint/no-explicit-any
       else sandbox.stub(superagent, 'get').returns(githubRespone as any);
-      ({ app, client } = await setupApplication({
-        technique: { class: conf, cache: cache },
+      ({app, client} = await setupApplication({
+        technique: {class: conf, cache: cache},
       }));
     });
 

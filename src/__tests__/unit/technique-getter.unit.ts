@@ -1,5 +1,5 @@
-import { expect } from 'chai';
-import { createSandbox } from 'sinon';
+import {expect} from 'chai';
+import {createSandbox} from 'sinon';
 import superagent from 'superagent';
 import * as techniqueGetter from '../../misc/technique-getter';
 import {
@@ -35,10 +35,10 @@ describe('BioPortalTechniques', () => {
     prefLabel: 'a bb     cc d',
     '@id': 'a',
     synonym: ['b', 'c  d    e'],
-    children: [{ '@id': '1' }, { '@id': '2' }],
+    children: [{'@id': '1'}, {'@id': '2'}],
     parents: [
-      { prefLabel: null, '@id': '3' },
-      { prefLabel: 'd', '@id': '4' },
+      {prefLabel: null, '@id': '3'},
+      {prefLabel: 'd', '@id': '4'},
     ],
   };
 
@@ -128,7 +128,7 @@ describe('BioPortalTechniques', () => {
             },
           ];
           const expected = {
-            parents: { '1': ['3', '4'], '2': [] },
+            parents: {'1': ['3', '4'], '2': []},
             leaves: ['1'],
           };
           function* f(arr: techniqueGetter.TechniqueCollection[]) {
@@ -153,7 +153,7 @@ describe('BioPortalTechniques', () => {
               return {
                 set: () => {
                   return new Promise(resolve => {
-                    resolve({ text: '{"collection":[1,2],"pageCount":4}' });
+                    resolve({text: '{"collection":[1,2],"pageCount":4}'});
                   });
                 },
               };
@@ -181,10 +181,10 @@ describe('BioPortalTechniques', () => {
               prefLabel: ' a ',
               '@id': '1',
               synonym: [' A '],
-              children: [{ '@id': '2' }],
+              children: [{'@id': '2'}],
               parents: [
-                { prefLabel: null, '@id': '1' },
-                { prefLabel: null, '@id': '1' },
+                {prefLabel: null, '@id': '1'},
+                {prefLabel: null, '@id': '1'},
               ],
             },
             {
@@ -192,12 +192,12 @@ describe('BioPortalTechniques', () => {
               '@id': '2',
               synonym: [],
               children: [],
-              parents: [{ prefLabel: 'a', '@id': '1' }],
+              parents: [{prefLabel: 'a', '@id': '1'}],
             },
           ];
           const expected = {
-            relatives: { '1': new Set(['1', '2']), '2': new Set(['2']) },
-            firstDescendants: { '1': ['2'], '2': [] },
+            relatives: {'1': new Set(['1', '2']), '2': new Set(['2'])},
+            firstDescendants: {'1': ['2'], '2': []},
             collection: [
               {
                 prefLabel: 'a',
@@ -238,8 +238,8 @@ describe('BioPortalTechniques', () => {
           children: ['2'],
           parents: [],
         };
-        const o = { leaves: [], parents: {}, children: {} };
-        const expected = { children: {}, leaves: [], parents: { '1': [] } };
+        const o = {leaves: [], parents: {}, children: {}};
+        const expected = {children: {}, leaves: [], parents: {'1': []}};
         BioPortalTechniques.processInCollectionLoop(node, o);
         expect(o).to.be.eql(expected);
         done();
@@ -280,7 +280,7 @@ describe('GitHubOwlTechnique', () => {
         message: 'with /',
       },
     ];
-    tests.forEach(({ args, expected, message }) => {
+    tests.forEach(({args, expected, message}) => {
       context(`Composes an url based on the config file ${message}`, () => {
         it(`${message}`, done => {
           args.composeURL();
@@ -296,7 +296,7 @@ describe('GitHubOwlTechnique', () => {
       sandbox
         .stub(superagent, 'get')
         // eslint-disable-next-line  @typescript-eslint/no-explicit-any
-        .returns({ responseType: () => ({ body: xmlContent }) } as any);
+        .returns({responseType: () => ({body: xmlContent})} as any);
       const data = await GitHubOwlTechnique.getCollection();
       expect(data.length).to.be.eql(3);
     });
@@ -323,7 +323,7 @@ describe('GitHubOwlTechnique', () => {
         message: 'from about split',
       },
     ];
-    tests.forEach(({ args, expected, message }) => {
+    tests.forEach(({args, expected, message}) => {
       it(`${message}`, done => {
         expect(GitHubOwlTechnique.prefLabel(args)).to.be.eql(expected);
         done();
@@ -354,16 +354,16 @@ describe('GitHubOwlTechnique', () => {
   describe('postProcessCollectionAndNodes', () => {
     it('Returns the pids of the leaves and appends to an array', done => {
       GitHubOwlTechnique.collection = [
-        { pid: '1', parents: [], synonym: [], prefLabel: 'a', children: [] },
-        { pid: '2', parents: [], synonym: [], prefLabel: 'b', children: [] },
-        { pid: '3', parents: ['1'], synonym: [], prefLabel: 'c', children: [] },
+        {pid: '1', parents: [], synonym: [], prefLabel: 'a', children: []},
+        {pid: '2', parents: [], synonym: [], prefLabel: 'b', children: []},
+        {pid: '3', parents: ['1'], synonym: [], prefLabel: 'c', children: []},
       ];
       const node = {
-        children: { '1': ['2'], '4': ['5', '6'] },
+        children: {'1': ['2'], '4': ['5', '6']},
         leaves: [],
         parents: {},
       };
-      GitHubOwlTechnique.equivalentClasses = { '1': ['4'] };
+      GitHubOwlTechnique.equivalentClasses = {'1': ['4']};
       GitHubOwlTechnique.postProcessCollectionAndNodes(node);
       expect(node.leaves).to.be.eql(['2', '3']);
       expect(GitHubOwlTechnique.collection[0].children).to.be.eql([
@@ -437,8 +437,8 @@ describe('GitHubOwlTechnique', () => {
         parents: ['1'],
         children: [],
       };
-      const o = { leaves: [], parents: {}, children: { '1': ['2'] } };
-      const expected = { children: { '1': ['2', '3'] }, leaves: [], parents: {} };
+      const o = {leaves: [], parents: {}, children: {'1': ['2']}};
+      const expected = {children: {'1': ['2', '3']}, leaves: [], parents: {}};
       GitHubOwlTechnique.processInCollectionLoop(node, o);
       expect(o).to.be.eql(expected);
       done();
@@ -450,9 +450,9 @@ describe('GitHubOwlTechnique', () => {
       const o = {
         leaves: [],
         parents: {},
-        children: { '1': ['2'], '4': ['5', '6'] },
+        children: {'1': ['2'], '4': ['5', '6']},
       };
-      GitHubOwlTechnique.equivalentClasses = { '1': ['4'] };
+      GitHubOwlTechnique.equivalentClasses = {'1': ['4']};
       expect(GitHubOwlTechnique.childrenFromEquivalentClass(o, '1')).to.be.eql([
         '2',
         '5',
@@ -471,7 +471,7 @@ describe('GitHubOwlTechnique', () => {
         parents: ['1', '2'],
         children: [],
       };
-      GitHubOwlTechnique.equivalentClasses = { '2': ['4', '5'] };
+      GitHubOwlTechnique.equivalentClasses = {'2': ['4', '5']};
       expect(GitHubOwlTechnique.parentsFromEquivalentClass(node)).to.be.eql([
         '1',
         '2',
