@@ -243,7 +243,8 @@ export class GitHubOwlTechnique extends OntologyTechnique {
         ...(o['children'][pid] || []),
         ...(this.equivalentClasses[pid] || []).reduce(
           (eq: string[], c: string) => (
-            eq.push(...(o['children'][c] || [])), eq
+            eq.push(...(o['children'][c] || [])),
+            eq
           ),
           [],
         ),
@@ -257,7 +258,8 @@ export class GitHubOwlTechnique extends OntologyTechnique {
         ...node.parents,
         ...node.parents.reduce(
           (eq: string[], p: string) => (
-            eq.push(...(this.equivalentClasses[p] || [])), eq
+            eq.push(...(this.equivalentClasses[p] || [])),
+            eq
           ),
           [],
         ),
