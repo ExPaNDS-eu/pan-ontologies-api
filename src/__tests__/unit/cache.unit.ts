@@ -1,9 +1,9 @@
-import { Entity, Filter } from '@loopback/repository';
-import { expect } from 'chai';
-import { createSandbox } from 'sinon';
+import {Entity, Filter} from '@loopback/repository';
+import {expect} from 'chai';
+import {createSandbox} from 'sinon';
 
-import { LoopbackCache } from '../../misc/cache';
-import { TechniqueRepository } from '../../repositories';
+import {LoopbackCache} from '../../misc/cache';
+import {TechniqueRepository} from '../../repositories';
 
 const sandbox = createSandbox();
 
@@ -16,27 +16,27 @@ describe('LoopbackCache', () => {
   describe('set', () => {
     const tests = [
       {
-        args: { input: [{ name: 'a', pid: 1 }], ttl: 100 },
-        expected: { name: 'a', pid: 1, ttl: 100 },
+        args: {input: [{name: 'a', pid: 1}], ttl: 100},
+        expected: {name: 'a', pid: 1, ttl: 100},
         message: 'array',
       },
       {
-        args: { input: { name: 'a', pid: 1 }, ttl: 100 },
-        expected: { name: 'a', pid: 1, ttl: 100 },
+        args: {input: {name: 'a', pid: 1}, ttl: 100},
+        expected: {name: 'a', pid: 1, ttl: 100},
         message: 'object',
       },
       {
         args: {
           input: (function* gen(input) {
             yield input;
-          })({ name: 'b', pid: 2, createdAt: 100 }),
+          })({name: 'b', pid: 2, createdAt: 100}),
           ttl: 0,
         },
-        expected: { name: 'b', pid: 2, ttl: 0, createdAt: 100 },
+        expected: {name: 'b', pid: 2, ttl: 0, createdAt: 100},
         message: 'generator',
       },
     ];
-    tests.forEach(({ args, expected, message }) => {
+    tests.forEach(({args, expected, message}) => {
       context(`Stores the ${message} in the loopback datasource`, () => {
         it(`${message}`, done => {
           const mock = sandbox.createStubInstance(TechniqueRepository);
@@ -44,7 +44,7 @@ describe('LoopbackCache', () => {
           createStub.resolves(expected);
           const cache = new LoopbackCache(
             // eslint-disable-next-line  @typescript-eslint/no-explicit-any
-            { sttl: 10, model: mock as any },
+            {sttl: 10, model: mock as any},
           );
           cache
             .set('pid', args.input, args.ttl)
@@ -58,15 +58,15 @@ describe('LoopbackCache', () => {
     });
 
     it('test already existing', async () => {
-      const args = { input: { name: 'a', pid: 1 }, ttl: 100 };
-      const expected = { name: 'a', pid: 1, ttl: 100 };
+      const args = {input: {name: 'a', pid: 1}, ttl: 100};
+      const expected = {name: 'a', pid: 1, ttl: 100};
       const mock = sandbox.createStubInstance(TechniqueRepository);
       const existsStub = mock.exists as sinon.SinonStub;
       existsStub.resolves(true);
       const replaceStub = mock.replaceById as sinon.SinonStub;
       const cache = new LoopbackCache(
         // eslint-disable-next-line  @typescript-eslint/no-explicit-any
-        { sttl: 10, model: mock as any },
+        {sttl: 10, model: mock as any},
       );
       await cache.set('pid', args.input, args.ttl);
       expect(replaceStub.calledWith(args.input.pid, expected)).to.equal(true);
@@ -76,22 +76,22 @@ describe('LoopbackCache', () => {
   describe('get', () => {
     const tests = [
       {
-        args: { where: { name: 'a' } },
-        expected: [{ name: 'a', pid: '1', ttl: 100, createdAt: 10 }],
+        args: {where: {name: 'a'}},
+        expected: [{name: 'a', pid: '1', ttl: 100, createdAt: 10}],
         message: 'non empty',
       },
       {
-        args: { where: { name: 'c' } },
+        args: {where: {name: 'c'}},
         expected: [],
         message: 'empty',
       },
       {
-        args: { where: { name: 'b' } },
+        args: {where: {name: 'b'}},
         expected: 'deleteAll',
         message: 'expired',
       },
     ];
-    tests.forEach(({ args, expected, message }) => {
+    tests.forEach(({args, expected, message}) => {
       context(`${message} cache due to filter`, () => {
         it(`${message}`, done => {
           const mock = sandbox.createStubInstance(TechniqueRepository);
@@ -99,10 +99,10 @@ describe('LoopbackCache', () => {
           sandbox.stub(Date, 'now').returns(10);
           const cache = new LoopbackCache(
             // eslint-disable-next-line  @typescript-eslint/no-explicit-any
-            { sttl: 10, model: mock as any },
+            {sttl: 10, model: mock as any},
           );
           if (expected === 'deleteAll') {
-            findStub.returns([{ name: 'b', pid: 2, createdAt: 0, ttl: 0 }]);
+            findStub.returns([{name: 'b', pid: 2, createdAt: 0, ttl: 0}]);
             cache
               .get(args as Filter<Entity>)
               .then(() => {

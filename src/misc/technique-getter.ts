@@ -1,5 +1,5 @@
 import * as jsdom from 'jsdom';
-import * as superagent from 'superagent';
+import superagent from 'superagent';
 import { URL } from 'url';
 
 import * as utils from './utils';

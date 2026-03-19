@@ -1,5 +1,5 @@
-import { ApplicationConfig, PanOntologiesApplication } from './application';
-import { CacheConfig, Config, GenericGetter } from './config';
+import {ApplicationConfig, PanOntologiesApplication} from './application';
+import {CacheConfig, Config, GenericGetter} from './config';
 import * as fs from 'fs';
 import * as path from 'path';
 

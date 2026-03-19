@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import { createSandbox } from 'sinon';
-import * as superagent from 'superagent';
+import superagent from 'superagent';
 import * as techniqueGetter from '../../misc/technique-getter';
 import {
   xmlContent,
