@@ -6,5 +6,12 @@
   "osvVulnerabilityAlerts": true,
   "lockFileMaintenance": {
     "enabled": true
-  }
+  },
+  "packageRules": [
+    {
+      "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
+      "automerge": true,
+      "reviewers": []
+    }
+  ]
 }
