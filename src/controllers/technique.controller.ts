@@ -22,8 +22,7 @@ export class TechniqueController {
   constructor(
     @inject('technique')
     private technique:
-      | OntologyTechniquesLoopbackCacheBuilder
-      | FreeFormTechniques,
+      OntologyTechniquesLoopbackCacheBuilder | FreeFormTechniques,
     @repository(TechniqueRepository)
     public techniqueRepository: TechniqueRepository,
   ) {}

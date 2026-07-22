@@ -17,8 +17,7 @@ type OwlTechniqueCollection = BaseTechniqueCollection & {
 };
 
 export type TechniqueCollection =
-  | BaseTechniqueCollection
-  | OwlTechniqueCollection;
+  BaseTechniqueCollection | OwlTechniqueCollection;
 
 interface BaseTechniqueNodes {
   leaves: string[];

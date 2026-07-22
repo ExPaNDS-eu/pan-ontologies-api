@@ -34,8 +34,7 @@ export class TechniqueOntologyInterceptor implements Provider<Interceptor> {
   constructor(
     @inject('technique')
     private technique:
-      | OntologyTechniquesLoopbackCacheBuilder
-      | FreeFormTechniques,
+      OntologyTechniquesLoopbackCacheBuilder | FreeFormTechniques,
   ) {}
 
   /**

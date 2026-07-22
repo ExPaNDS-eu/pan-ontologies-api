@@ -166,8 +166,7 @@ export async function selectTechniqueBuilder(
   dataModel: Promise<AnyObject>,
 ): Promise<OntologyTechniquesLoopbackCacheBuilder | FreeFormTechniques> {
   let techniqueBuilder:
-    | OntologyTechniquesLoopbackCacheBuilder
-    | FreeFormTechniques;
+    OntologyTechniquesLoopbackCacheBuilder | FreeFormTechniques;
   if ('technique' in config) {
     config.technique.cache.model = await dataModel;
     techniqueBuilder = new OntologyTechniquesLoopbackCacheBuilder(
