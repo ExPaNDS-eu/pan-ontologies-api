@@ -60,7 +60,7 @@
     "@loopback/rest": "^15.0.0",
     "@loopback/rest-explorer": "^8.0.0",
     "@loopback/service-proxy": "^8.0.0",
-    "jsdom": "^29.0.0",
+    "jsdom": "^30.0.0",
     "tslib": "^2.7.0"
   },
   "devDependencies": {
@@ -71,7 +71,7 @@
     "@typescript-eslint/eslint-plugin": "^8.0.0",
     "@typescript-eslint/parser": "^8.0.0",
     "@types/chai": "^5.0.0",
-    "@types/jsdom": "^28.0.0",
+    "@types/jsdom": "^30.0.0",
     "@types/mocha": "^10.0.6",
     "@types/node": "^24.0.0",
     "chai": "^6.0.0",
