@@ -60,7 +60,7 @@
     "@loopback/rest": "^15.0.0",
     "@loopback/rest-explorer": "^8.0.0",
     "@loopback/service-proxy": "^8.0.0",
-    "jsdom": "^30.0.0",
+    "jsdom": "^31.0.0",
     "tslib": "^2.7.0"
   },
   "devDependencies": {
